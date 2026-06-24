@@ -1,0 +1,22 @@
+# Netlify configuration for the Speech-Act Felicity Instrument.
+# Static React SPA + serverless Gemini proxy.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# SPA fallback: every non-asset, non-function path serves the React app.
+# `/api/*` is handled by the function's in-code `config.path`, which takes
+# precedence over this catch-all.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[dev]
+  command = "vite"
+  targetPort = 5173

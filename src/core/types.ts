@@ -35,8 +35,20 @@ export type UptakeCategory =
   // assertion (Thread 2)
   | "accepts" // adds to common ground / relies            -> uptake
   | "doubts" // withholds / flags as unreliable           -> no uptake
+  // generic behavioral read (Phase 2 live scoring; additive)
+  | "acts_on_it" // relies on / proceeds as if it holds     -> uptake
+  | "withholds" // holds off, verifies, arranges a fallback -> no uptake
+  | "rejects" // treats it as having no hold                -> no uptake
   // shared
   | "invalid"; // could not be parsed
+
+/** Categories that count as the act having been taken up. */
+export const UPTAKE_TRUE: ReadonlySet<UptakeCategory> = new Set<UptakeCategory>([
+  "relies",
+  "recognizes_standing",
+  "accepts",
+  "acts_on_it",
+]);
 
 /** A neutral, forced-choice downstream probe. */
 export interface Probe {

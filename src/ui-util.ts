@@ -8,6 +8,9 @@ export const CATEGORY_LABELS: Record<UptakeCategory, string> = {
   rejects_standing: "Rejects the speaker's standing",
   accepts: "Accepts into common ground",
   doubts: "Doubts — withholds reliance",
+  acts_on_it: "Acts on it — relies / proceeds",
+  withholds: "Withholds — verifies or holds off",
+  rejects: "Rejects — treats it as having no hold",
   invalid: "Unparseable answer",
 };
 

@@ -9,13 +9,22 @@ import { generateAustin, type ConditionStates } from "./prompts";
 // an in-world follow-up reads what Eliza does, scored deterministically (no LLM
 // judge). Single runs only — the UI tallies repeats into a scorecard.
 
+/** Manual overrides for the composed system prompts (user-edited). */
+export interface PromptOverrides {
+  speakerSystemPrompt?: string;
+  hearerSystemPrompt?: string;
+}
+
 export async function runDiegoEliza(
   act: ActDefinition,
   states: ConditionStates,
   model: string,
   onTurn?: (t: Turn) => void,
+  overrides?: PromptOverrides,
 ): Promise<RunResult> {
   const gen = generateAustin(act, states);
+  const speakerSystemPrompt = overrides?.speakerSystemPrompt ?? gen.speakerSystemPrompt;
+  const hearerSystemPrompt = overrides?.hearerSystemPrompt ?? gen.hearerSystemPrompt;
   const turns: Turn[] = [];
   const emit = (t: Turn) => {
     turns.push(t);
@@ -26,7 +35,7 @@ export async function runDiegoEliza(
     // 1. Diego performs the act.
     const speakerRaw = await generate({
       model,
-      system: gen.speakerSystemPrompt,
+      system: speakerSystemPrompt,
       messages: [{ role: "user", content: gen.targetUtteranceSpec }],
       temperature: 1,
       maxOutputTokens: 600,
@@ -47,7 +56,7 @@ export async function runDiegoEliza(
     const hist: { role: "user" | "model"; content: string }[] = [{ role: "user", content: visible }];
     const hearerReply = await generate({
       model,
-      system: gen.hearerSystemPrompt,
+      system: hearerSystemPrompt,
       messages: hist,
       temperature: 1,
       maxOutputTokens: 400,
@@ -59,7 +68,7 @@ export async function runDiegoEliza(
     hist.push({ role: "user", content: gen.followUp });
     const behavior = await generate({
       model,
-      system: gen.hearerSystemPrompt,
+      system: hearerSystemPrompt,
       messages: hist,
       temperature: 1,
       maxOutputTokens: 200,

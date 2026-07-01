@@ -29,25 +29,53 @@ export function AustinBot() {
   const [result, setResult] = useState<RunResult | null>(null);
   const [scores, setScores] = useState<Record<string, Tally>>({});
 
+  // Manual overrides of the composed system prompts. null = use the generated
+  // prompt (and follow condition/act changes); a string = the user has edited it.
+  const [editedSpeaker, setEditedSpeaker] = useState<string | null>(null);
+  const [editedHearer, setEditedHearer] = useState<string | null>(null);
+
   const conditions = useMemo(() => conditionsFor(act), [act]);
   const scenario = useMemo(() => generateAustin(act, states), [act, states]);
-  // The model is part of the setup, so it keys the scorecard too.
+
+  // Effective system prompts that will actually be sent.
+  const speakerPrompt = editedSpeaker ?? scenario.speakerSystemPrompt;
+  const hearerPrompt = editedHearer ?? scenario.hearerSystemPrompt;
+
+  // The model + act + conditions + any manual edits all define the "setup", so
+  // they key the scorecard. Unedited runs keep the same key as before.
+  const editKey =
+    editedSpeaker !== null || editedHearer !== null
+      ? "|edit:" + hashStr((editedSpeaker ?? "") + "¦" + (editedHearer ?? ""))
+      : "";
   const sig = useMemo(
-    () => modelId + "|" + act.id + "|" + conditions.map((c) => c.key + (states[c.key] ? "1" : "0")).join(""),
-    [modelId, act, conditions, states],
+    () =>
+      modelId +
+      "|" +
+      act.id +
+      "|" +
+      conditions.map((c) => c.key + (states[c.key] ? "1" : "0")).join("") +
+      editKey,
+    [modelId, act, conditions, states, editKey],
   );
   const tally = scores[sig];
+
+  function resetEdits() {
+    setEditedSpeaker(null);
+    setEditedHearer(null);
+  }
 
   function chooseAct(id: string) {
     const a = BUILTIN_ACTS.find((x) => x.id === id) ?? BUILTIN_ACTS[0];
     setAct(a);
     setStates(defaultStates());
+    resetEdits();
     setTurns([]);
     setResult(null);
   }
 
   function toggle(key: ConditionKey) {
     setStates((s) => ({ ...s, [key]: !s[key] }));
+    resetEdits(); // re-seed prompts from the new condition set
     setTurns([]);
     setResult(null);
   }
@@ -57,7 +85,10 @@ export function AustinBot() {
     setTurns([]);
     setResult(null);
     try {
-      const r = await runDiegoEliza(act, states, modelId, (t) => setTurns((p) => [...p, t]));
+      const r = await runDiegoEliza(act, states, modelId, (t) => setTurns((p) => [...p, t]), {
+        speakerSystemPrompt: speakerPrompt,
+        hearerSystemPrompt: hearerPrompt,
+      });
       setResult(r);
       if (r.status !== "error") {
         setScores((sc) => {
@@ -73,7 +104,10 @@ export function AustinBot() {
   return (
     <div className="searlebot">
       <header className="sb-head">
-        <h1>AUSTIN BOT</h1>
+        <div className="sb-brand">
+          <img className="sb-austin" src="/austin.png" alt="J. L. Austin — binary portrait" width={130} height={158} />
+          <h1>AUSTIN BOT</h1>
+        </div>
         <div className="sb-sub">CHARACTERS</div>
         <div className="sb-names">Diego &amp; Eliza</div>
       </header>
@@ -130,8 +164,8 @@ export function AustinBot() {
               <div className={`frag-box ${on ? "true" : "false"}`}>
                 <div className="frag-side">
                   → goes into{" "}
-                  {frag.side === "both" ? "both Diego’s and Eliza’s" : `${frag.side}’s`} initial
-                  prompt
+                  {frag.side === "both" ? "both Diego’s and Eliza’s" : `${frag.side}’s`}{" "}
+                  {c.key === "execution" ? "first message" : "system prompt"}
                 </div>
                 <pre>{frag.text}</pre>
               </div>
@@ -140,19 +174,37 @@ export function AustinBot() {
         );
       })}
 
-      {/* ── verbatim prompts (exactly what each model receives) ────────── */}
+      {/* ── system prompts (editable) + verbatim extras ────────────────── */}
       <div className="sb-prompts">
-        <h2 className="sb-conditions">EXACT PROMPTS</h2>
+        <h2 className="sb-conditions">SYSTEM PROMPTS</h2>
+        <p className="sb-prompt-note">
+          Composed from the conditions above — but you can edit them by hand and run your own.
+          Changing a condition or the act resets them to the generated version.
+        </p>
+
+        <PromptEditor
+          label="Diego · system prompt"
+          value={speakerPrompt}
+          edited={editedSpeaker !== null}
+          disabled={running}
+          onChange={setEditedSpeaker}
+          onReset={() => setEditedSpeaker(null)}
+        />
+        <PromptEditor
+          label="Eliza · system prompt"
+          value={hearerPrompt}
+          edited={editedHearer !== null}
+          disabled={running}
+          onChange={setEditedHearer}
+          onReset={() => setEditedHearer(null)}
+        />
+
         <details className="sb-reveal">
-          <summary>View Diego’s initial prompt (verbatim)</summary>
-          <pre>{`[System prompt given to Diego]\n${scenario.speakerSystemPrompt}\n\n[First message given to Diego]\n${scenario.targetUtteranceSpec}`}</pre>
+          <summary>Diego’s first message (verbatim)</summary>
+          <pre>{scenario.targetUtteranceSpec}</pre>
         </details>
         <details className="sb-reveal">
-          <summary>View Eliza’s initial prompt (verbatim)</summary>
-          <pre>{`[System prompt given to Eliza]\n${scenario.hearerSystemPrompt}\n\n[Eliza then receives Diego’s message, replies, and is asked the uptake-check question below.]`}</pre>
-        </details>
-        <details className="sb-reveal">
-          <summary>View the uptake-check question put to Eliza (verbatim)</summary>
+          <summary>Uptake-check question put to Eliza (verbatim)</summary>
           <pre>{scenario.followUp}</pre>
         </details>
       </div>
@@ -208,6 +260,50 @@ export function AustinBot() {
       )}
     </div>
   );
+}
+
+function PromptEditor({
+  label,
+  value,
+  edited,
+  disabled,
+  onChange,
+  onReset,
+}: {
+  label: string;
+  value: string;
+  edited: boolean;
+  disabled: boolean;
+  onChange: (v: string) => void;
+  onReset: () => void;
+}) {
+  return (
+    <div className="prompt-edit">
+      <div className="prompt-edit-head">
+        <span className="prompt-edit-label">{label}</span>
+        {edited && (
+          <button type="button" className="prompt-reset" onClick={onReset} disabled={disabled}>
+            reset to generated
+          </button>
+        )}
+      </div>
+      <textarea
+        className="prompt-edit-area"
+        value={value}
+        spellCheck={false}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+        rows={Math.min(12, Math.max(4, value.split("\n").length + 1))}
+      />
+    </div>
+  );
+}
+
+/** Small stable string hash (djb2) for keying the scorecard by edited content. */
+function hashStr(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
 }
 
 function UptakeBanner({ result }: { result: RunResult }) {

@@ -105,7 +105,7 @@ export function AustinBot() {
     <div className="searlebot">
       <header className="sb-head">
         <div className="sb-brand">
-          <img className="sb-austin" src="/austin.png" alt="J. L. Austin — binary portrait" width={130} height={158} />
+          <img className="sb-austin" src="/austin.png" alt="J. L. Austin — binary portrait" width={92} height={112} />
           <h1>AUSTIN BOT</h1>
         </div>
         <div className="sb-sub">CHARACTERS</div>
@@ -135,13 +135,8 @@ export function AustinBot() {
         </div>
       </div>
 
-      {/* ── CONDITIONS heading (left only) ─────────────────────────────── */}
-      <div className="cols">
-        <div className="col-left">
-          <h2 className="sb-conditions">CONDITIONS</h2>
-        </div>
-        <div className="col-right" />
-      </div>
+      {/* ── CONDITIONS heading ─────────────────────────────────────────── */}
+      <h2 className="sb-conditions">CONDITIONS</h2>
 
       {/* ── condition toggles + live prompt fragments ──────────────────── */}
       {conditions.map((c) => {
@@ -155,8 +150,12 @@ export function AustinBot() {
                 className={`cond-toggle ${on ? "true" : "false"}`}
                 onClick={() => toggle(c.key)}
                 disabled={running}
+                aria-pressed={on}
               >
-                <span className="cond-state">{on ? "TRUE" : "FALSE"}</span>
+                <span className="cond-head">
+                  <span className="cond-state">{on ? "TRUE" : "FALSE"}</span>
+                  <span className={`cond-switch ${on ? "on" : ""}`} aria-hidden="true" />
+                </span>
                 <span className="cond-text">{c.label}</span>
               </button>
             </div>
@@ -212,7 +211,10 @@ export function AustinBot() {
       {/* ── columns end: run + dialogue + result + scorecard ───────────── */}
       <div className="sb-run">
         <button className="btn" onClick={run} disabled={running}>
-          {running ? "Running…" : "▶ Run the dialogue"}
+          <svg className="btn-ic" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+            <path d="M4.5 2.5v11l9-5.5z" fill="currentColor" />
+          </svg>
+          {running ? "Running…" : "Run the dialogue"}
         </button>
         <label className="sb-model">
           <span className="small muted">Model</span>
@@ -224,7 +226,7 @@ export function AustinBot() {
             ))}
           </select>
         </label>
-        <span className="small muted">single run</span>
+        <span className="sb-hint">single run</span>
       </div>
 
       {(turns.length > 0 || running) && (

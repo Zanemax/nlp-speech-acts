@@ -10,7 +10,6 @@ import {
 } from "../austin/prompts";
 import { runDiegoEliza } from "../austin/run";
 import { AVAILABLE_MODELS, DEFAULT_MODEL } from "../api/gemini";
-import { CATEGORY_LABELS } from "../ui-util";
 import { ChatTranscript } from "./ChatTranscript";
 
 // AUSTIN BOT — a friendly demonstration of speech acts through a dialogue

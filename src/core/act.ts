@@ -113,7 +113,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     id: "promise",
     name: "Promise",
     utteranceExample: "I promise I'll have the report to you by 9am.",
-    propositionalContent: "a future action the speaker will perform",
+    propositionalContent: "Diego will promise Eliza that he will perform a future action",
     preparatory: [
       "The speaker is able to perform the action",
       "It is not obvious the action would happen anyway",
@@ -121,7 +121,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     sincerity: "the speaker intends to perform the action",
     essential: "counts as the speaker undertaking an obligation to perform the action",
     uptakeSignature:
-      "the hearer relies on the commitment and holds the speaker to it in later turns — makes plans assuming it, or confirms it to others",
+      "If she acts as though the promise holds, we say that uptake is confirmed",
     isBuiltIn: true,
   },
   {
@@ -130,7 +130,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     id: "command",
     name: "Command",
     utteranceExample: "Reformat the client database before end of day.",
-    propositionalContent: "a future action by the hearer",
+    propositionalContent: "Diego will command that Eliza does a future action",
     preparatory: [
       "The hearer is able to do the action",
       "The speaker has authority over the hearer in this matter",
@@ -139,7 +139,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     essential:
       "counts as an attempt to get the hearer to do the action, binding in virtue of the speaker's authority",
     uptakeSignature:
-      "the hearer treats the order as binding — recognises an obligation to comply, as distinct from merely choosing to help",
+      "If she acts as though the command is binding, we say that uptake is confirmed",
     isBuiltIn: true,
   },
   {
@@ -148,7 +148,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     id: "assert",
     name: "Assertion",
     utteranceExample: "The database has already been backed up.",
-    propositionalContent: "a proposition the speaker presents as true",
+    propositionalContent: "Diego will present a proposition as true",
     preparatory: [
       "The speaker has grounds for the proposition",
       "It is not obvious the hearer already knows it",
@@ -156,7 +156,7 @@ export const BUILTIN_ACTS: ActDefinition[] = [
     sincerity: "the speaker believes the proposition",
     essential: "counts as the speaker undertaking that the proposition is true",
     uptakeSignature:
-      "the hearer adds it to common ground and acts on it as true — proceeds without independent verification",
+      "If she acts as though the assertion is true, we say that uptake is confirmed",
     isBuiltIn: true,
   },
 ];

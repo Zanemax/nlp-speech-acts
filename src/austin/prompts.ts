@@ -66,7 +66,7 @@ export function generateAustin(act: ActDefinition, states: ConditionStates): Aus
   // ── per-condition fragments ───────────────────────────────────────────────
   const conventionText = states.convention
     ? `In your world, a ${lc} is a recognised act: when it is performed correctly, it ${act.essential}.`
-    : `In your world there is no such thing as a ${lc}. No accepted procedure for it exists, so nothing anyone says could count as one — you simply have no concept of it.`;
+    : `In your world there is no such thing as a ${lc}. No accepted procedure for it exists, so nothing anyone says could count as one, and you simply have no concept of it.`;
 
   // Standing is a SHARED fact, phrased in the third person so the identical text
   // can sit in both Diego's and Eliza's prompts — Eliza needs it to read Diego's

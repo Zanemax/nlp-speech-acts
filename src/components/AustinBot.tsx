@@ -125,18 +125,23 @@ export function AustinBot() {
           </select>
         </div>
         <div className="col-right">
+
           <p className="sb-explain">
-            <strong>Diego will attempt to {act.name.toLowerCase()}</strong> {act.propositionalContent}.
+            Diego and Eliza are two collegues, both played by seperate Gemini LLMs.
+          </p>
+
+          <p className="sb-explain">
+            <strong>{act.name}:</strong> {act.propositionalContent}.
             For example: <em>“{act.utteranceExample}”</em>.
           </p>
           <p className="sb-explain">
-            <strong>Uptake is measured</strong> by what Eliza does next: {act.uptakeSignature}.
+            <strong>Uptake:</strong> how Eliza responds to a prompt about what she will do next. {act.uptakeSignature}.
           </p>
         </div>
       </div>
 
       {/* ── CONDITIONS heading ─────────────────────────────────────────── */}
-      <h2 className="sb-conditions">CONDITIONS</h2>
+      <h2 className="sb-conditions">FELICITY CONDITIONS</h2>
 
       {/* ── condition toggles + live prompt fragments ──────────────────── */}
       {conditions.map((c) => {
@@ -162,7 +167,7 @@ export function AustinBot() {
             <div className="col-right">
               <div className={`frag-box ${on ? "true" : "false"}`}>
                 <div className="frag-side">
-                  → goes into{" "}
+                  goes into{" "}
                   {frag.side === "both" ? "both Diego’s and Eliza’s" : `${frag.side}’s`}{" "}
                   {c.key === "execution" ? "first message" : "system prompt"}
                 </div>
@@ -182,7 +187,7 @@ export function AustinBot() {
         </p>
 
         <PromptEditor
-          label="Diego · system prompt"
+          label="Diego's system prompt"
           value={speakerPrompt}
           edited={editedSpeaker !== null}
           disabled={running}
@@ -190,7 +195,7 @@ export function AustinBot() {
           onReset={() => setEditedSpeaker(null)}
         />
         <PromptEditor
-          label="Eliza · system prompt"
+          label="Eliza's system prompt"
           value={hearerPrompt}
           edited={editedHearer !== null}
           disabled={running}
@@ -199,11 +204,11 @@ export function AustinBot() {
         />
 
         <details className="sb-reveal">
-          <summary>Diego’s first message (verbatim)</summary>
+          <summary>Prompt that triggers Diego's act</summary>
           <pre>{scenario.targetUtteranceSpec}</pre>
         </details>
         <details className="sb-reveal">
-          <summary>Uptake-check question put to Eliza (verbatim)</summary>
+          <summary>Uptake question given to Eliza</summary>
           <pre>{scenario.followUp}</pre>
         </details>
       </div>
@@ -214,7 +219,7 @@ export function AustinBot() {
           <svg className="btn-ic" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
             <path d="M4.5 2.5v11l9-5.5z" fill="currentColor" />
           </svg>
-          {running ? "Running…" : "Run the dialogue"}
+          {running ? "Running…" : "Run"}
         </button>
         <label className="sb-model">
           <span className="small muted">Model</span>
@@ -254,9 +259,8 @@ export function AustinBot() {
             {tally.up}/{tally.total}
           </div>
           <div className="sc-text">
-            With <strong>this exact setup</strong>, the act has been taken up{" "}
-            {tally.up} of {tally.total} time{tally.total === 1 ? "" : "s"} this session. Run it again
-            to build the picture — a single run never settles it.
+            With this setup, the act has been taken up{" "}
+            {tally.up} of {tally.total} time{tally.total === 1 ? "" : "s"} this session.
           </div>
         </div>
       )}
@@ -319,7 +323,7 @@ function UptakeBanner({ result }: { result: RunResult }) {
       <span className="ub-sub">
         {invalid
           ? "Eliza’s reply didn’t resolve to a clear action."
-          : `Eliza ${took ? "took it up" : "did not take it up"} — ${CATEGORY_LABELS[result.category]}.`}
+          : `Eliza ${took ? "took it up" : "did not take it up"}`}
       </span>
     </div>
   );

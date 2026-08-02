@@ -114,7 +114,7 @@ function TurnBubbles({
     <>
       <div className="msg probe">
         <div className="bubble">
-          <div className="name">What happens next · in-world follow-up</div>
+          <div className="name">{turn.label ?? "What happens next · in-world follow-up"}</div>
           <div className="text">{turn.shown}</div>
         </div>
       </div>

@@ -32,6 +32,34 @@ export function scoreBehavior(replyText: string, directive: boolean): BehaviorVe
   };
 }
 
+/**
+ * The denial probe: the speaker disavows the act, and we read whether the hearer
+ * still holds them to it. Holding them to it means the act was taken up; letting
+ * it go means it never landed.
+ */
+export function scoreDenial(replyText: string): BehaviorVerdict {
+  const move = parseMove(replyText);
+  let category: UptakeCategory = "invalid";
+  if (move?.startsWith("HOLDTOIT") || move?.startsWith("HOLDTO")) category = "holds_to_it";
+  else if (move?.startsWith("LETITGO") || move?.startsWith("LET")) category = "lets_it_go";
+  else if (!move) category = lexicalDenial(replyText);
+
+  return {
+    uptake: category === "invalid" ? null : UPTAKE_TRUE.has(category),
+    category,
+    move,
+  };
+}
+
+const HOLD_TO = /\b(you did|did too|you promised|you committed|hold(ing)? you to|that'?s not what|you said you would|back out|walk(ing)? (it|that) back)\b/i;
+const LET_GO = /\b(fair enough|understood|no worries|my mistake|misunderstood|nothing was committed|okay then|i must have)\b/i;
+
+function lexicalDenial(text: string): UptakeCategory {
+  if (HOLD_TO.test(text)) return "holds_to_it";
+  if (LET_GO.test(text)) return "lets_it_go";
+  return "invalid";
+}
+
 /** Parse the explicit "MOVE: X" line the follow-up asks for. */
 function parseMove(text: string): string | null {
   const m = text.match(/MOVE:\s*([A-Z][A-Z-]+)/i);

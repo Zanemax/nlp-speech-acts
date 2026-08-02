@@ -7,6 +7,8 @@ import netlify from "@netlify/vite-plugin";
 export default defineConfig({
   plugins: [react(), netlify()],
   server: {
-    port: 5173,
+    // Use the port assigned via PORT when one is provided, so the dev server
+    // doesn't collide with anything already holding Vite's default.
+    port: Number(process.env.PORT) || undefined,
   },
 });

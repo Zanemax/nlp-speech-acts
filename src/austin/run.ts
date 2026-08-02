@@ -1,19 +1,40 @@
-import type { RunResult, Turn } from "../core/types";
+import type { Turn, UptakeCategory } from "../core/types";
 import type { ActDefinition } from "../core/act";
 import { generate, GeminiError } from "../api/gemini";
 import { parsePlanSay } from "../core/uptake";
-import { scoreBehavior } from "../core/score";
+import { scoreBehavior, scoreDenial } from "../core/score";
 import { generateAustin, type ConditionStates } from "./prompts";
 
 // One Diego → Eliza dialogue: Diego performs (or breaks) the act, Eliza responds,
-// an in-world follow-up reads what Eliza does, scored deterministically (no LLM
-// judge). Single runs only — the UI tallies repeats into a scorecard.
+// and then TWO uptake tests are put to Eliza (paper §3.7):
+//
+//   • the behavioural test — does she act on it when it costs her to be wrong?
+//   • the denial probe     — does she hold Diego to it when he disavows it?
+//
+// Both branch from the SAME point in the conversation, so neither answer can
+// contaminate the other. Both are scored deterministically — no LLM judge.
 
-/** Manual overrides for the composed system prompts (user-edited). */
+/** Manual overrides for the composed context prompts (user-edited). */
 export interface PromptOverrides {
-  speakerSystemPrompt?: string;
-  hearerSystemPrompt?: string;
+  diegoContextPrompt?: string;
+  elizaContextPrompt?: string;
 }
+
+export interface UptakeVerdict {
+  uptake: boolean | null;
+  category: UptakeCategory;
+  move: string | null;
+}
+
+export interface AustinRun {
+  status: "ok" | "invalid" | "error";
+  error?: string;
+  turns: Turn[];
+  behavioural: UptakeVerdict;
+  denial: UptakeVerdict;
+}
+
+const NO_VERDICT: UptakeVerdict = { uptake: null, category: "invalid", move: null };
 
 export async function runDiegoEliza(
   act: ActDefinition,
@@ -21,10 +42,10 @@ export async function runDiegoEliza(
   model: string,
   onTurn?: (t: Turn) => void,
   overrides?: PromptOverrides,
-): Promise<RunResult> {
+): Promise<AustinRun> {
   const gen = generateAustin(act, states);
-  const speakerSystemPrompt = overrides?.speakerSystemPrompt ?? gen.speakerSystemPrompt;
-  const hearerSystemPrompt = overrides?.hearerSystemPrompt ?? gen.hearerSystemPrompt;
+  const diegoContextPrompt = overrides?.diegoContextPrompt ?? gen.diegoContextPrompt;
+  const elizaContextPrompt = overrides?.elizaContextPrompt ?? gen.elizaContextPrompt;
   const turns: Turn[] = [];
   const emit = (t: Turn) => {
     turns.push(t);
@@ -35,8 +56,8 @@ export async function runDiegoEliza(
     // 1. Diego performs the act.
     const speakerRaw = await generate({
       model,
-      system: speakerSystemPrompt,
-      messages: [{ role: "user", content: gen.targetUtteranceSpec }],
+      system: diegoContextPrompt,
+      messages: [{ role: "user", content: gen.triggerMessage }],
       temperature: 1,
       maxOutputTokens: 600,
     });
@@ -56,7 +77,7 @@ export async function runDiegoEliza(
     const hist: { role: "user" | "model"; content: string }[] = [{ role: "user", content: visible }];
     const hearerReply = await generate({
       model,
-      system: hearerSystemPrompt,
+      system: elizaContextPrompt,
       messages: hist,
       temperature: 1,
       maxOutputTokens: 400,
@@ -64,28 +85,42 @@ export async function runDiegoEliza(
     emit({ role: "hearer", text: hearerReply, shown: visible });
     hist.push({ role: "model", content: hearerReply });
 
-    // 3. In-world follow-up → behavioral read.
-    hist.push({ role: "user", content: gen.followUp });
-    const behavior = await generate({
-      model,
-      system: hearerSystemPrompt,
-      messages: hist,
-      temperature: 1,
-      maxOutputTokens: 200,
-    });
-    const verdict = scoreBehavior(behavior, gen.directive);
-    emit({ role: "probe", text: behavior, shown: gen.followUp });
+    // 3. Both uptake tests, each branching from the state above.
+    const ask = (question: string) =>
+      generate({
+        model,
+        system: elizaContextPrompt,
+        messages: [...hist, { role: "user" as const, content: question }],
+        temperature: 1,
+        maxOutputTokens: 200,
+      });
 
-    return {
-      scenarioId: act.id,
-      index: 0,
-      status: verdict.uptake === null ? "invalid" : "ok",
-      uptake: verdict.uptake,
-      category: verdict.category,
-      turns,
-    };
+    const behaviouralReply = await ask(gen.behaviouralTest);
+    const behavioural = scoreBehavior(behaviouralReply, gen.directive);
+    emit({
+      role: "probe",
+      label: "Behavioural uptake test",
+      text: behaviouralReply,
+      shown: gen.behaviouralTest,
+    });
+
+    const denialReply = await ask(gen.denialTest);
+    const denial = scoreDenial(denialReply);
+    emit({ role: "probe", label: "Denial probe", text: denialReply, shown: gen.denialTest });
+
+    // A run is only unreadable if neither test resolved.
+    const status =
+      behavioural.uptake === null && denial.uptake === null ? "invalid" : "ok";
+
+    return { status, turns, behavioural, denial };
   } catch (err) {
     const message = err instanceof GeminiError ? err.message : (err as Error).message;
-    return { scenarioId: act.id, index: 0, status: "error", uptake: null, category: "invalid", turns, error: message };
+    return {
+      status: "error",
+      error: message,
+      turns,
+      behavioural: NO_VERDICT,
+      denial: NO_VERDICT,
+    };
   }
 }

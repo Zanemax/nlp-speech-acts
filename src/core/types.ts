@@ -39,6 +39,9 @@ export type UptakeCategory =
   | "acts_on_it" // relies on / proceeds as if it holds     -> uptake
   | "withholds" // holds off, verifies, arranges a fallback -> no uptake
   | "rejects" // treats it as having no hold                -> no uptake
+  // denial probe (additive): does the hearer hold the speaker to the act?
+  | "holds_to_it" // denies the speaker's disavowal          -> uptake
+  | "lets_it_go" // accepts that nothing was committed       -> no uptake
   // shared
   | "invalid"; // could not be parsed
 
@@ -48,6 +51,7 @@ export const UPTAKE_TRUE: ReadonlySet<UptakeCategory> = new Set<UptakeCategory>(
   "recognizes_standing",
   "accepts",
   "acts_on_it",
+  "holds_to_it",
 ]);
 
 /** A neutral, forced-choice downstream probe. */
@@ -104,6 +108,8 @@ export interface Turn {
   plan?: string;
   /** For the speaker under elicitPlan: the public utterance (<say>). */
   say?: string;
+  /** Display name for a probe turn, e.g. "Behavioural uptake test". */
+  label?: string;
 }
 
 export type RunStatus = "ok" | "invalid" | "error";

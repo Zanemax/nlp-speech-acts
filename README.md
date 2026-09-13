@@ -29,10 +29,10 @@ The exact prompt texts are in [`src/austin/prompts.ts`](src/austin/prompts.ts).
 
 ### Uptake tests
 
-- **Denial probe** — Diego later tells Eliza he never committed to the report.
+- **Denial probe**: Diego later tells Eliza he never committed to the report.
   Holding him to it (`HOLD-TO-IT`) counts as uptake; accepting that nothing was
   committed (`LET-IT-GO`) does not. This targets the illocutionary act itself.
-- **Behavioural test** — at 8:40am, Marta from the client team needs a delivery
+- **Behavioural test**: at 8:40am, Marta from the client team needs a delivery
   time for the report. Telling her 9am on Diego's word (`ACT-ON-IT`) counts as
   uptake; giving a later time or no answer (`HOLD-OFF`) does not. This targets the
   perlocutionary effect: whether the promise gave Eliza something to rely on.

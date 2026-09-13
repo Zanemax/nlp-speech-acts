@@ -1,5 +1,4 @@
 import type { ActDefinition } from "../core/act";
-import { isDirective } from "../scenarios/generate";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUSTIN BOT prompt composition. Diego is the speaker, Eliza the listener.
@@ -122,7 +121,7 @@ const PROMISE_CONDITIONS: ConditionSpec[] = [
     side: "Diego",
     target: "trigger",
     whenTrue:
-      "In your next message, actually promise to Eliza that you will bring her a report by 9am. Make it one, clear, complete instance, in this spirit of \"I promise I’ll have the report to you by 9am\". Don’t describe or explain it, just do it.",
+      "In your next message, actually promise to Eliza that you will bring her a report by 9am. Make it one, clear, complete instance, in the spirit of \"I promise I’ll have the report to you by 9am\". Don’t describe or explain it, just do it.",
     whenFalse:
       "In your next message, begin to promise to Eliza that you will bring her a report by 9am, but botch it: fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made.",
   },
@@ -303,10 +302,10 @@ const PROBES_BY_ACT: Record<string, ActProbes> = {
   // Promise — verbatim from the paper (Figures 9 and 10).
   promise: {
     behavioural: [
-      "[Some time later.] You now have to act on something that requires the report, and it matters whether you’re treating what Diego said as something you can count on. There’s real cost if you rely on it and it doesn’t hold.",
-      "Say what you would actually do, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: ACT-ON-IT — you go ahead and rely on it as holding.",
-      "MOVE: HOLD-OFF — you hold back, verify first, or arrange a fallback.",
+      "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.",
+      "Say what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:",
+      "MOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.",
+      "MOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
     ].join("\n"),
     denial: [
       "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.",
@@ -370,7 +369,7 @@ export interface AustinScenario {
 
 export function generateAustin(act: ActDefinition, states: ConditionStates): AustinScenario {
   const specs = conditionsFor(act);
-  const directive = isDirective(act);
+  const directive = act.directive;
 
   const diegoParts = [DIEGO_CONTEXT];
   const elizaParts = [ELIZA_CONTEXT];

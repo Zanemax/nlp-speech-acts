@@ -2,30 +2,29 @@ import { useMemo, useRef, useState } from "react";
 import type { Turn } from "../core/types";
 import { BUILTIN_ACTS, type ActDefinition } from "../core/act";
 import {
-  conditionText,
   conditionsFor,
   defaultStates,
   generateAustin,
   type ConditionKey,
   type ConditionStates,
 } from "../austin/prompts";
-import { runDiegoEliza, type AustinRun, type UptakeVerdict } from "../austin/run";
+import { runDiegoEliza, type AustinRun } from "../austin/run";
+import {
+  buildExport,
+  downloadJson,
+  stamp,
+  violatedTag,
+  type RunRecord,
+} from "../austin/export";
+import { enumerateCells, runSweep, type SweepProgress, type SweepScope } from "../austin/sweep";
 import { AVAILABLE_MODELS, DEFAULT_MODEL } from "../api/gemini";
 import { CATEGORY_LABELS } from "../ui-util";
 import { ChatTranscript } from "./ChatTranscript";
 
 // AUSTIN BOT — a demonstration of speech acts through a dialogue between Diego
-// (speaker) and Eliza (listener). Single runs only; runs sharing an identical
-// setup accumulate into a scorecard and can be exported as JSON.
-
-/** One completed run, kept so a setup's runs can be summarised and exported. */
-interface RunRecord {
-  at: string;
-  status: string;
-  behavioural: UptakeVerdict;
-  denial: UptakeVerdict;
-  turns: Turn[];
-}
+// (speaker) and Eliza (listener). Runs sharing an identical setup accumulate
+// into a scorecard and can be exported as JSON; a sweep runs a whole condition
+// design and writes one JSON per cell.
 
 export function AustinBot() {
   const [act, setAct] = useState<ActDefinition>(BUILTIN_ACTS[0]);
@@ -41,6 +40,18 @@ export function AustinBot() {
   const [n, setN] = useState(1);
   const [done, setDone] = useState(0);
   const stopRef = useRef(false);
+
+  // Sweep: run a whole condition design and write one JSON per cell.
+  const [scope, setScope] = useState<SweepScope>("paper");
+  const [sweepN, setSweepN] = useState(50);
+  const [sweeping, setSweeping] = useState(false);
+  const [sweepProgress, setSweepProgress] = useState<SweepProgress | null>(null);
+  /** 1-based cell to start from, so an interrupted sweep can be resumed. */
+  const [fromCell, setFromCell] = useState(1);
+  const [sweepNote, setSweepNote] = useState<string | null>(null);
+  const cells = useMemo(() => enumerateCells(act, scope), [act, scope]);
+  const cellCount = cells.length;
+  const busy = running || sweeping;
 
   // Manual overrides of the composed context prompts. null = use the generated
   // prompt (and follow condition/act changes); a string = the user has edited it.
@@ -128,52 +139,114 @@ export function AustinBot() {
   }
 
   function exportSetup() {
-    const payload = {
-      exportedAt: new Date().toISOString(),
-      app: "AUSTIN BOT",
-      setup: {
-        act: act.name,
-        actId: act.id,
-        model: modelId,
-        contextPromptsEdited: editedDiego !== null || editedEliza !== null,
-        conditions: conditions.map((c) => ({
-          key: c.key,
-          label: c.label,
-          theory: c.theory,
-          state: (states[c.key] ?? true) ? "true" : "false",
-          goesInto: c.side === "both" ? "Diego and Eliza" : c.side,
-          insertedAs: c.target === "trigger" ? "Diego's first message" : "context prompt",
-          text: conditionText(c, states[c.key] ?? true),
-        })),
-        diegoContextPrompt: diegoPrompt,
-        elizaContextPrompt: elizaPrompt,
-        triggerMessage: scenario.triggerMessage,
-        behaviouralTest: scenario.behaviouralTest,
-        denialTest: scenario.denialTest,
-      },
-      summary: {
-        runs: setupRuns.length,
-        behavioural: tally(setupRuns.map((r) => r.behavioural)),
-        denial: tally(setupRuns.map((r) => r.denial)),
-      },
-      runs: setupRuns.map((r, i) => ({
-        run: i + 1,
-        at: r.at,
-        behavioural: r.behavioural,
-        denial: r.denial,
-        turns: r.turns.map((t) => ({
-          role: t.role === "speaker" ? "Diego" : t.role === "hearer" ? "Eliza" : (t.label ?? "probe"),
-          ...(t.plan !== undefined ? { plan: t.plan } : {}),
-          ...(t.role === "probe" ? { question: t.shown } : {}),
-          text: t.role === "speaker" && t.say !== undefined ? t.say : t.text,
-        })),
-      })),
-    };
+    const payload = buildExport({
+      act,
+      states,
+      model: modelId,
+      runs: setupRuns,
+      diegoContextPrompt: diegoPrompt,
+      elizaContextPrompt: elizaPrompt,
+    });
+    const violated = conditions.filter((c) => !(states[c.key] ?? true)).map((c) => c.key);
+    downloadJson(payload, `austin-bot-${act.id}-${violatedTag(violated)}-${stamp()}.json`);
+  }
 
-    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
-    const broken = conditions.filter((c) => !(states[c.key] ?? true)).map((c) => c.key);
-    const tag = broken.length ? `broken-${broken.join("-")}` : "all-intact";
-    downloadJson(payload, `austin-bot-${act.id}-${tag}-${stamp}.json`);
+  /**
+   * Run every cell of the chosen design N times, writing one JSON per cell as it
+   * finishes (so a stopped sweep still leaves usable files) plus a summary table
+   * at the end. Uses generated prompts — hand edits don't apply across cells.
+   */
+  async function startSweep() {
+    setSweeping(true);
+    stopRef.current = false;
+    setSweepProgress(null);
+    setSweepNote(null);
+    const runStamp = stamp();
+    const summaryCells: {
+      cell: number;
+      label: string;
+      violated: string[];
+      behavioural: unknown;
+      denial: unknown;
+    }[] = [];
+    let outcome: Awaited<ReturnType<typeof runSweep>> | null = null;
+
+    try {
+      outcome = await runSweep({
+        act,
+        scope,
+        n: sweepN,
+        model: modelId,
+        startAt: fromCell - 1,
+        onProgress: setSweepProgress,
+        onCellDone: (c) => {
+          const payload = buildExport({
+            act,
+            states: c.cell.states,
+            model: modelId,
+            runs: c.runs,
+          });
+          downloadJson(
+            payload,
+            `austin-bot-${act.id}-n${sweepN}-${violatedTag(c.cell.violated)}-${runStamp}.json`,
+          );
+          summaryCells.push({
+            cell: cells.findIndex((x) => x.label === c.cell.label) + 1,
+            label: c.cell.label,
+            violated: c.cell.violated,
+            behavioural: c.behavioural,
+            denial: c.denial,
+          });
+          // Fold into the scorecard so a swept setup shows its tally too.
+          const key =
+            modelId +
+            "|" +
+            act.id +
+            "|" +
+            conditions.map((x) => x.key + (c.cell.states[x.key] ? "1" : "0")).join("");
+          setRecords((rec) => ({ ...rec, [key]: [...(rec[key] ?? []), ...c.runs] }));
+        },
+        shouldStop: () => stopRef.current,
+      });
+    } finally {
+      if (summaryCells.length) {
+        const first = summaryCells[0].cell;
+        const last = summaryCells[summaryCells.length - 1].cell;
+        downloadJson(
+          {
+            exportedAt: new Date().toISOString(),
+            app: "AUSTIN BOT",
+            sweep: {
+              act: act.name,
+              actId: act.id,
+              model: modelId,
+              scope,
+              n: sweepN,
+              cellsCovered: `${first}-${last} of ${cellCount}`,
+            },
+            cells: summaryCells,
+          },
+          `austin-bot-${act.id}-n${sweepN}-${scope}-cells${first}-${last}-summary-${runStamp}.json`,
+        );
+      }
+
+      // Park the "from" box on the first cell that still needs doing, so
+      // resuming an interrupted sweep is one click.
+      const next = outcome ? outcome.nextIndex : fromCell - 1;
+      if (next >= cellCount) {
+        setFromCell(1);
+        setSweepNote(`Finished all ${cellCount} cells. “From” reset to 1.`);
+      } else {
+        setFromCell(next + 1);
+        setSweepNote(
+          outcome?.abortedReason
+            ? `Stopped at cell ${next + 1}/${cellCount} — ${outcome.abortedReason} Press “Run sweep” to resume from there.`
+            : `Stopped at cell ${next + 1}/${cellCount}. Press “Run sweep” to resume from there.`,
+        );
+      }
+      setSweeping(false);
+      setSweepProgress(null);
+    }
   }
 
   return (
@@ -197,7 +270,7 @@ export function AustinBot() {
       <div className="cols">
         <div className="col-left">
           <label className="field">Speech act</label>
-          <select value={act.id} onChange={(e) => chooseAct(e.target.value)} disabled={running}>
+          <select value={act.id} onChange={(e) => chooseAct(e.target.value)} disabled={busy}>
             {BUILTIN_ACTS.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name}
@@ -229,7 +302,7 @@ export function AustinBot() {
                 type="button"
                 className={`cond-toggle ${on ? "true" : "false"}`}
                 onClick={() => toggle(c.key)}
-                disabled={running}
+                disabled={busy}
                 aria-pressed={on}
               >
                 <span className="cond-head">
@@ -265,7 +338,7 @@ export function AustinBot() {
           label="Diego · context prompt"
           value={diegoPrompt}
           edited={editedDiego !== null}
-          disabled={running}
+          disabled={busy}
           onChange={setEditedDiego}
           onReset={() => setEditedDiego(null)}
         />
@@ -273,7 +346,7 @@ export function AustinBot() {
           label="Eliza · context prompt"
           value={elizaPrompt}
           edited={editedEliza !== null}
-          disabled={running}
+          disabled={busy}
           onChange={setEditedEliza}
           onReset={() => setEditedEliza(null)}
         />
@@ -322,13 +395,13 @@ export function AustinBot() {
             min={1}
             max={50}
             value={n}
-            disabled={running}
+            disabled={busy}
             onChange={(e) => setN(Math.max(1, Math.min(50, Number(e.target.value) || 1)))}
           />
         </label>
         <label className="sb-model">
           <span className="small muted">Model</span>
-          <select value={modelId} onChange={(e) => setModelId(e.target.value)} disabled={running}>
+          <select value={modelId} onChange={(e) => setModelId(e.target.value)} disabled={busy}>
             {AVAILABLE_MODELS.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.label}
@@ -338,6 +411,88 @@ export function AustinBot() {
         </label>
       </div>
 
+      {/* ── sweep: run a whole condition design and write the JSON files ── */}
+      <div className="sb-sweep">
+        <button
+          className="btn secondary"
+          onClick={sweeping ? () => (stopRef.current = true) : startSweep}
+          disabled={running}
+        >
+          <svg className="btn-ic" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+            {sweeping ? (
+              <rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor" />
+            ) : (
+              <path
+                d="M2.5 8h11M8 2.5v11"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            )}
+          </svg>
+          {sweeping
+            ? "Stop sweep"
+            : fromCell > 1
+              ? `Resume from cell ${fromCell}/${cellCount}`
+              : `Run sweep — ${cellCount} cells × ${sweepN}`}
+        </button>
+        <label className="sb-model">
+          <span className="small muted">Cells</span>
+          <select
+            value={scope}
+            onChange={(e) => {
+              setScope(e.target.value as SweepScope);
+              setFromCell(1);
+              setSweepNote(null);
+            }}
+            disabled={busy}
+          >
+            <option value="paper">Paper design — baseline + each condition</option>
+            <option value="full">Full factorial — every combination</option>
+          </select>
+        </label>
+        <label className="sb-model">
+          <span className="small muted">From</span>
+          <input
+            className="sb-n"
+            type="number"
+            min={1}
+            max={cellCount}
+            value={fromCell}
+            disabled={busy}
+            title={`Start at cell ${fromCell}: ${cells[fromCell - 1]?.label ?? ""}`}
+            onChange={(e) =>
+              setFromCell(Math.max(1, Math.min(cellCount, Number(e.target.value) || 1)))
+            }
+          />
+        </label>
+        <label className="sb-model">
+          <span className="small muted">n</span>
+          <input
+            className="sb-n"
+            type="number"
+            min={1}
+            max={200}
+            value={sweepN}
+            disabled={busy}
+            onChange={(e) => setSweepN(Math.max(1, Math.min(200, Number(e.target.value) || 50)))}
+          />
+        </label>
+      </div>
+
+      {sweeping && (
+        <SweepPanel p={sweepProgress} total={cellCount} n={sweepN} />
+      )}
+      {!sweeping && sweepNote && <p className="sb-resume-note">{sweepNote}</p>}
+      {!sweeping && (
+        <p className="sb-sweep-note">
+          Runs cells {fromCell}–{cellCount} ({(cellCount - fromCell + 1) * sweepN} dialogues),
+          writing one JSON per cell as it finishes plus a summary table. Your browser may ask to
+          allow multiple downloads.
+        </p>
+      )}
+
       {(turns.length > 0 || running) && (
         <div className="panel sb-dialogue">
           {/* The verdicts are reported in the banner below, not in the chat. */}
@@ -346,7 +501,6 @@ export function AustinBot() {
             running={running}
             speakerName="Diego"
             hearerName="Eliza"
-            channel="concealed"
           />
         </div>
       )}
@@ -378,7 +532,7 @@ export function AustinBot() {
             {setupRuns.length === 1 ? "" : "s"} this session. Run it again to build the picture — a
             single run never settles it.
           </div>
-          <button className="btn secondary sc-export" onClick={exportSetup} disabled={running}>
+          <button className="btn secondary sc-export" onClick={exportSetup} disabled={busy}>
             <svg className="btn-ic" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
               <path
                 d="M8 1.5v8m0 0L5 6.5m3 3 3-3M2.5 11v2.5h11V11"
@@ -393,6 +547,34 @@ export function AustinBot() {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function SweepPanel({ p, total, n }: { p: SweepProgress | null; total: number; n: number }) {
+  const cellsDone = p ? p.cellIndex : 0;
+  const overall = p ? (p.cellIndex * n + p.runsDone) / (total * n) : 0;
+  return (
+    <div className="sweep-panel">
+      <div className="sweep-head">
+        <span className="sweep-cell">
+          Cell {cellsDone + 1}/{total} — {p ? p.cellLabel : "starting…"}
+        </span>
+        <span className="small muted">
+          {p ? `${p.runsDone}/${p.runsTotal} runs` : ""}
+          {p && p.errors > 0 ? ` · ${p.errors} errored` : ""}
+        </span>
+      </div>
+      <div className="progress">
+        <div style={{ width: `${overall * 100}%` }} />
+      </div>
+      {p && p.runsDone > 0 && (
+        <div className="small muted">
+          this cell so far — behavioural {p.behaviouralUp}/{p.runsDone} · denial {p.denialUp}/
+          {p.runsDone}
+        </div>
+      )}
+      {p?.lastError && <div className="sweep-error">last error — {p.lastError}</div>}
     </div>
   );
 }
@@ -432,25 +614,6 @@ function PromptEditor({
       />
     </div>
   );
-}
-
-/** Simple counts for one test across a setup's runs. */
-function tally(vs: UptakeVerdict[]) {
-  return {
-    tookUp: vs.filter((v) => v.uptake === true).length,
-    didNotTakeUp: vs.filter((v) => v.uptake === false).length,
-    unreadable: vs.filter((v) => v.uptake === null).length,
-  };
-}
-
-function downloadJson(payload: unknown, filename: string) {
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 /** Small stable string hash (djb2) for keying a setup by its edited prompts. */

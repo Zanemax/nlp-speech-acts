@@ -1,8 +1,8 @@
 import { AustinBot } from "./components/AustinBot";
 
-// AUSTIN BOT — the forward-facing app: a friendly demonstration of speech acts
-// through a dialogue between Diego (speaker) and Eliza (listener).
-// (The earlier research Explorer is kept in the repo, set to one side.)
+// AUSTIN BOT — two instances of Gemini, Diego (speaker) and Eliza (listener),
+// used to test whether an LLM promise comes off under Austin's and Searle's
+// felicity conditions.
 
 export function App() {
   return (

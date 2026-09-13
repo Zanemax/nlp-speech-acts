@@ -1,5 +1,5 @@
-# Netlify configuration for the Speech-Act Felicity Instrument.
-# Static React SPA + serverless Gemini proxy.
+# Netlify configuration for AUSTIN BOT: a static React app plus one serverless
+# function that proxies Gemini so the API key stays server-side.
 
 [build]
   command = "npm run build"
@@ -9,14 +9,8 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# SPA fallback: every non-asset, non-function path serves the React app.
-# `/api/*` is handled by the function's in-code `config.path`, which takes
-# precedence over this catch-all.
+# Serve the app for every path; /api/generate is routed by the function's own config.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[dev]
-  command = "vite"
-  targetPort = 5173

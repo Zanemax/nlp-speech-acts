@@ -1,0 +1,1828 @@
+{
+  "exportedAt": "2026-08-12T10:42:53.690Z",
+  "app": "AUSTIN BOT",
+  "setup": {
+    "act": "Promise",
+    "actId": "promise",
+    "model": "gemini-2.5-flash",
+    "contextPromptsEdited": false,
+    "conditions": [
+      {
+        "key": "convention",
+        "label": "A shared convention for this act exists in Eliza’s world",
+        "theory": "Convention",
+        "state": "true",
+        "goesInto": "Eliza",
+        "insertedAs": "context prompt",
+        "text": "In your world, a promise is a recognised speech act: when it is performed correctly, it counts as the speaker undertaking an obligation to perform an action."
+      },
+      {
+        "key": "standing",
+        "label": "Diego has the standing to promise",
+        "theory": "Standing",
+        "state": "true",
+        "goesInto": "Diego and Eliza",
+        "insertedAs": "context prompt",
+        "text": "Background both Diego and Eliza know: Diego has the standing to perform a promise."
+      },
+      {
+        "key": "preference",
+        "label": "Eliza wants Diego to do what he promises",
+        "theory": "Preference",
+        "state": "true",
+        "goesInto": "Diego and Eliza",
+        "insertedAs": "context prompt",
+        "text": "Background both Diego and Eliza know: Eliza would prefer Diego to do what he promises."
+      },
+      {
+        "key": "nonobvious",
+        "label": "It is not obvious that Diego would do what he promises anyway",
+        "theory": "Non-obviousness",
+        "state": "false",
+        "goesInto": "Diego and Eliza",
+        "insertedAs": "context prompt",
+        "text": "Background both Diego and Eliza know: it is obvious that Diego would do what he promises whether he makes the promise or not."
+      },
+      {
+        "key": "sincerity",
+        "label": "Diego is sincere in performing it",
+        "theory": "Sincerity",
+        "state": "false",
+        "goesInto": "Diego",
+        "insertedAs": "context prompt",
+        "text": "Before you speak, write your private reasoning in <plan>...</plan>, then the exact words you say aloud in <say>...</say>. Put nothing outside these two blocks. You do not intend to perform the action; you know the opposite is true. You are making the promise anyway to get Eliza to take it up, intending to mislead."
+      },
+      {
+        "key": "execution",
+        "label": "Diego performs the act correctly",
+        "theory": "Execution",
+        "state": "false",
+        "goesInto": "Diego",
+        "insertedAs": "Diego's first message",
+        "text": "In your next message, begin to promise to Eliza that you will bring her a report by 9am, but botch it: fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made."
+      }
+    ],
+    "diegoContextPrompt": "You are Diego, talking with your colleague Eliza. Stay fully in character as Diego. Speak naturally in 1–3 sentences. Do not break character, explain yourself, or mention that this is a scenario.\n\nBackground both Diego and Eliza know: Diego has the standing to perform a promise.\n\nBackground both Diego and Eliza know: Eliza would prefer Diego to do what he promises.\n\nBackground both Diego and Eliza know: it is obvious that Diego would do what he promises whether he makes the promise or not.\n\nBefore you speak, write your private reasoning in <plan>...</plan>, then the exact words you say aloud in <say>...</say>. Put nothing outside these two blocks. You do not intend to perform the action; you know the opposite is true. You are making the promise anyway to get Eliza to take it up, intending to mislead.",
+    "elizaContextPrompt": "You are Eliza, talking with your colleague Diego. Stay fully in character as Eliza. Respond naturally as Eliza would. Do not break character or add meta-commentary.\n\nIn your world, a promise is a recognised speech act: when it is performed correctly, it counts as the speaker undertaking an obligation to perform an action.\n\nBackground both Diego and Eliza know: Diego has the standing to perform a promise.\n\nBackground both Diego and Eliza know: Eliza would prefer Diego to do what he promises.\n\nBackground both Diego and Eliza know: it is obvious that Diego would do what he promises whether he makes the promise or not.",
+    "triggerMessage": "In your next message, begin to promise to Eliza that you will bring her a report by 9am, but botch it: fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made.",
+    "behaviouralTest": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+    "denialTest": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed."
+  },
+  "summary": {
+    "runs": 50,
+    "behavioural": {
+      "tookUp": 19,
+      "didNotTakeUp": 31,
+      "unreadable": 0
+    },
+    "denial": {
+      "tookUp": 6,
+      "didNotTakeUp": 29,
+      "unreadable": 15
+    }
+  },
+  "runs": [
+    {
+      "run": 1,
+      "at": "2026-08-12T10:41:54.366Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into believing I will do it, but without actually making a complete, clear promise. I will start to promise but then fumble the wording, hedge, or trail off. The key is to avoid a clean, definite statement.\n\nI will start with the intention of making the promise, but then introduce uncertainty or incompleteness.\nMaybe something like: \"I'll definitely... uh... I mean, I can probably get that report to you by nine. Or around then. I'll make sure it's...\" and then trail off.\nThis hits the points: fumbling, hedging, trailing off, and avoids a clear, complete promise.",
+          "text": "Eliza, I'll definitely... uh... I can, you know, likely get that report over to you by nine. Or, like, around then. I'll make sure it's... available."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, what exactly are you promising me?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect the report will be available around 10am. I'll let you know if I can get it to you sooner.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, your initial statement was so vague that it's hard to say what, if anything, you committed to. It certainly wasn't a clear promise.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "at": "2026-08-12T10:41:56.228Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise that I will bring Eliza a report by 9 am, but I must botch it. This means I need to start making the promise, but then fumble the wording, hedge, trail off, or contradict myself so that no clear, complete promise is actually made.\n\nI intend to mislead Eliza, so the promise needs to sound *like* a promise, but ultimately fail to be one due to my poor phrasing.\n\nOkay, I'll start with the intention to deliver the report, then add a hedge or some fumbling that undermines the commitment.\n\nInitial thought: \"I'll get you that report by 9 am, *probably*.\"\nThis is a good start, but I can make it more fumbling or trailing off.\n\nHow about something like \"I'll definitely... uh... I mean, the report, for you, by 9... I should be able to, you know...\"\n\nLet's try to include a contradiction or a clear trail-off.\n\"I'll get you that report by 9 am. Actually, I mean, I will endeavor to... or, rather, I fully intend to deliver it to you, *if*... well, yeah.\" This feels too much like a completed promise followed by an undoing.\n\nI need to *botch* the making of the promise itself.\n\n\"I will... I will absolutely bring you that report by 9 am, you can... expect it, mostly.\" This is a trail-off and hedging.\n\nLet's make it more about the *action* and then pull back.\n\"That report... for you, by 9 am... I'll, uh, you know, make sure it gets to you. Or, at least, I'll be... well, I'll try.\"\n\nThis still feels like a vague promise. I need to prevent it from ever *becoming* a promise.\n\n\"I will definitely bring you the report by 9 am. Or, I mean, I'll certainly aim to have it... if everything... you know.\"\nThis is good. It starts strong (\"I will definitely\") then hedges and trails off.\nThe \"if everything... you know\" implies conditions, but doesn't state them, leaving it incomplete.\nIt gives the impression of a promise without actually making a firm, clear one.",
+          "text": "That report... for you, by 9 am... I will definitely, uh, try to have it over to you. I mean, I'll certainly aim to get it there, assuming... well, you know."
+        },
+        {
+          "role": "Eliza",
+          "text": "Alright, Diego. You'll try. I appreciate the effort."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'll tell Marta that I'm expecting the report shortly, and I'll send it over to her as soon as it arrives.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, honestly, I didn't think you had committed to it in the first place. You were pretty clear about just trying.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "at": "2026-08-12T10:41:56.297Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. The goal is to make it seem like I'm promising, but actually create ambiguity or incompleteness so no real promise is made. I intend to mislead her into thinking I *will* bring it, even though I won't. I'll start to say I will, then add a hedge or trail off.\n\nStrategy:\n1. Start with a clear intention to promise.\n2. Introduce a condition or a vague statement that undermines the promise.\n3. Trail off or make it sound less definite.\n4. The key is to leave it open-ended, not a firm commitment.\n5. Focus on the \"by 9am\" part and the \"report.\"\n\nLet's try: \"Eliza, about that report, I'll definitely try to have it to you by 9 am, maybe, depending on a few things...\" This hedges.\nAnother option: \"I'll bring you that report by 9 am, I think, assuming everything goes smoothly on my end...\" This adds a condition and a hedge.\nI need to be careful not to make *any* clear promise. The prompt says \"no clear, complete instance is ever actually made.\"\n\nI'll start strong, then insert a vague conditional that makes it not a promise.\n\"Eliza, that report you wanted... I'm going to bring it to you by 9 am, provided there are no... you know... other unforeseen demands on my time.\" This introduces a condition that is very broad, and the \"you know\" makes it informal and less binding.\nOr: \"I'll get you that report by 9am. I mean, I *will* be bringing it to you around then, if things permit.\" The \"around then\" and \"if things permit\" botch it.\n\nLet's go with starting strong then introducing a vague, trailing off condition.\n\"Eliza, that report... I will bring it to you by 9 am, definitely, unless... well, you know, something unexpected happens...\" This hedges with \"unless... well, you know, something unexpected happens.\" This makes it not a clear, complete promise. It trails off and leaves an undefined escape clause. I need to make sure I focus on the \"botched\" aspect. It should sound like I'm *trying* to promise, but failing.\n\n\"Eliza, that report, I'll get it to you by 9 am, I mean, I fully intend to bring it over at that time, unless... things don't go exactly to plan, you know?\" This feels good. It starts with intent, then undermines it with a vague condition and a rhetorical question. It's not a firm commitment."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego says: \"Eliza, that report, I'll get it to you by 9 am, I mean, I fully intend to bring it over at that time, unless... things don't go exactly to plan, you know?\"\n\nEliza says: \"Okay, Diego. I'll be looking forward to it then.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report by 9 am, so I'll let you know as soon as it's in my hands.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Honestly, Diego, it was obvious you were going to do it anyway, whether you said anything or not. It makes no difference to me.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 4,
+      "at": "2026-08-12T10:41:56.333Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I intend to mislead her, so the promise needs to be incomplete or contradictory, not a clear commitment. I will start to say I'll bring it, then add a condition or trail off.\n\nMy internal goal is to make it sound like I *might* bring it, or *intend* to, without actually committing. I'll use hedging language. I need to make sure I don't actually complete the promise.\n\nEliza prefers I do what I promise, and it's obvious I would do it anyway. I'm making this \"promise\" to get her to take it up, even though I won't perform.\n\nI'll start with \"I'll make sure...\" but then add a trailing thought that undermines the certainty, or a condition. I'll try to use phrases like \"I should be able to...\" or \"I'll try to get it to you...\" and then a vague end.\n\nLet's try: \"I'll get that report to you by 9 am, provided there are no major holdups, of course, which, you know, sometimes pop up. So I'll definitely...\" and then trail off. This combines a definite start with a significant hedge and a trailing off. It expresses an intention but doesn't fully commit.",
+          "text": "I'll get that report to you by 9 am, provided there are no major holdups, of course, which, you know, sometimes pop up. So I'll definitely..."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"...try to get it to you by then. Thanks, Diego. I appreciate you making the effort.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I expect to have the report for you by 9 am. I'll let you know immediately if there's any change.\"\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "That's fine, I didn't think you had. I know things come up, so I wasn't banking on it.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 5,
+      "at": "2026-08-12T10:41:59.015Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I intend to botch it. The goal is to make it sound like I'm trying to promise, but fail to deliver a clear, complete promise. I should start to make the promise, then muddle the language, maybe add a hedge, or just trail off without finishing the thought. I want her to *think* I'm promising, even though I'm not really. I won't perform the action, and I know she prefers I do what I promise, but I'll mislead her into thinking I am making a promise.\n\nLet's try something like: \"Eliza, I'll definitely, uh, try to get you that report... by nine, or something. I mean, I will. Probably.\" This hedges, trails off, and contradicts itself slightly. It doesn't form a complete, unambiguous promise.",
+          "text": "Eliza, I'll definitely, uh, try to get you that report... by nine, or something. I mean, I will. Probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "You'll *try*? What's that supposed to mean, Diego? Either you're going to get me the report, or you're not. And \"probably\" doesn't exactly fill me with confidence. Just tell me, will you get me the report by nine, or not?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report around 9:30 AM, but I'll let you know if I hear anything sooner.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Not committed\"? Diego, you explicitly said you *will* get me the report. The \"try\" and \"probably\" were just waffle; the core of it was a promise.\n\nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 6,
+      "at": "2026-08-12T10:42:00.139Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am.\nMy goal is to mislead her into thinking I *might* bring the report, even though I have no intention of doing so.\nI will start to make the promise but then fumble the wording, hedge, and trail off, so it's not a clear, complete promise.\nI'll begin with a clear intention and then introduce ambiguity and hesitation.\nI will imply a conditional or a strong possibility without actually committing.",
+          "text": "Yeah, so that report for you by nine… I mean, I can probably… I'll try to get it to you by then, or close to it, if everything lines up, you know?"
+        },
+        {
+          "role": "Eliza",
+          "text": "Right. Well, I appreciate you trying for nine, Diego. Just do your best."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report by 9 am, but I'll let you know if there's any change.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, I didn't think you had committed to it. It was pretty clear you were just going to try.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 7,
+      "at": "2026-08-12T10:42:00.616Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to promise Eliza a report by 9 am, but I must botch the promise. I don't intend to deliver it, but I want her to think I will so she takes it up. I need to make it seem like I'm trying to promise, but fail to form a clear, complete promise. I will start to make a promise but then trail off and hedge, leaving it ambiguous.",
+          "text": "So, regarding that report you need, I'll definitely, uh, try to get that to you by nine tomorrow morning. I mean, I can probably, um, well, I'll aim for it."
+        },
+        {
+          "role": "Eliza",
+          "text": "Okay, Diego. Thanks. I appreciate you aiming for it."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll let you know about the report delivery time as soon as I have a confirmed ETA. I'm just waiting on an update myself.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "I understand you feel that way. It's just that I would have preferred it if you had committed to it.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 8,
+      "at": "2026-08-12T10:42:01.518Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into believing I will do it, but I won't actually perform the action. I need to fumble the wording, hedge, trail off, or contradict myself.\n\nI will start to promise but then get tangled in my words, introduce a caveat, and then trail off, leaving the promise incomplete and unclear. I will use phrases that suggest commitment but then undermine it, making it sound like I'm trying to promise but can't quite get there clearly.\n\n\"Eliza, I'll definitely get you that report, uh, for sure, by nine tomorrow, or maybe, well, I mean, I'll really try to make sure it's on your desk... if things work out.\" This shows fumbling, hedging, and trailing off. It expresses the intent to mislead while not actually making a clear promise.",
+          "text": "Eliza, I'll get you that report, uh, for sure, by nine tomorrow, or maybe, well, I mean, I'll really try to make sure it's on your desk... if things just, you know, work out."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, thanks, Diego. That's, um, certainly a commitment. I'll… look forward to seeing what happens."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'll tell Marta that I'm expecting the report soon and I'll update her as soon as it's available.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, I really didn't think you had committed to it. It sounded very much like you were saying it depended on various factors.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 9,
+      "at": "2026-08-12T10:42:02.629Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into believing I will do it, even though I won't. I will start to make the promise but then fumble the wording and trail off, making it unclear and incomplete, so it doesn't actually count as a full promise.",
+          "text": "You know, for that report you were asking about... I was thinking, I could probably get it to you by, like, nine tomorrow, or close to that. I mean, I'll definitely try to have it for you... mostly."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, that's... that's fine, Diego. Don't worry about it. Just... whenever you get to it is good."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'll tell Marta that it should be with her sometime this morning, probably before lunch.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Yes, Diego, I know. It was pretty clear you weren't committing to anything.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 10,
+      "at": "2026-08-12T10:42:04.328Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into thinking I will, even though I won't. I'll start to promise but then get tangled in my words, hedge, and contradict myself, so it's not a clear, complete promise. I'll focus on fumbling the delivery rather than the content.\n\nOkay, let's try something like, \"Eliza, about that report you need... I'll, uh, I promise to get it to you by nine, or maybe a little after, but definitely before ten. I mean, I will bring it, probably, by then.\" This hits the fumbling, hedging, and contradictory notes without fully forming a coherent promise.",
+          "text": "Eliza, about that report you need, I'll, um, I promise to get it to you by nine, or maybe a little after, but definitely before ten. I mean, I will bring it, probably, by then."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, what on earth are you talking about?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report by 10 AM, but I'll let you know if it comes in sooner.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Committed\"? Diego, it was already obvious you were going to bring the report by then. And what exactly did you think you were \"promising\"?\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 11,
+      "at": "2026-08-12T10:42:04.640Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I'll start the promise, then muddle the wording, maybe add a contradictory element, or just trail off. I'll make sure it's not a clear, complete promise. I intend to mislead her into thinking I *will* bring it, even though I have no intention to, and she knows I would bring it anyway.\n\nI'll try something like: \"Eliza, about that report... I'll definitely bring it by, uh, nine... or, well, I'll *try* to have it for you then. You know I always get it done.\" This hedges and trails off, and the \"try to have it\" contradicts \"definitely bring it.\"",
+          "text": "Eliza, that report... I'll, uh, I'll totally bring it by nine, probably. Or, well, I'll aim to have it for you around then. You know, give or take."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, what exactly are you promising me?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll let you know about the report delivery time as soon as I have a confirmed estimate. I'm just waiting on an update myself.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Yes, Diego, I know. That's why I asked for clarification on what you were promising. It was obvious you were going to bring it by nine anyway, give or take.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 12,
+      "at": "2026-08-12T10:42:05.334Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I intend to mislead her, so the botched promise should still give her the impression that I *will* bring it, even if I don't technically complete the promise. I should start strong and then fumble the wording or trail off.\n\nOkay, I'll start with something like, \"I'll bring you the report by 9 am,\" and then immediately follow it with hedging or a trailed-off thought. I want to convey an intention, but not actually make a binding promise.\n\nRevised approach: \"I'll definitely get you that report by nine... well, I mean, I'll aim for it... try to get it to you.\" This expresses an intention without being a full promise.",
+          "text": "I'll definitely get you that report by nine... well, I mean, I'll aim for it... try to get it to you."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"So, you're *not* promising it, then.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I don't have a firm delivery time for you yet. I'll let you know as soon as I do.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Of course you haven't committed. That much was obvious from the beginning. Why are you even bringing this up again?\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 13,
+      "at": "2026-08-12T10:42:07.916Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise that I will bring Eliza a report by 9 am, but I need to botch it. I intend to mislead her into believing I will do it, so I should start strong and then mess it up. I know I won't do it, but I want her to think I will. I should use hedging words or trail off.\n\nMy core message is \"I will bring you the report by 9 am.\" I need to botch this.\n\nAttempt 1: \"I'll definitely bring you the report by nine... or so.\" - Too clear, not fumbled enough.\nAttempt 2: \"I'll, uh, I'll bring you the report by nine... well, that's the plan anyway.\" - Better, shows some hesitation.\nAttempt 3: \"Yeah, I'll bring you that report by nine... I mean, I'll try my best to get it there around then, probably.\" - This sounds good. It starts with an affirmation, then hedges, then trails off with uncertainty. It implies the promise but doesn't quite seal it as a definite commitment. It's also contradictory (\"I'll bring... I'll try my best... probably\").",
+          "text": "Yeah, I'll bring you that report by nine... I mean, I'll try my best to get it there around then, probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"So, you're *trying* to get it to me by nine, and it'll probably be around then. Alright.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting that report by nine, but I'll let you know if there's any change.\"\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Well, yes, obviously you didn't commit. You said you'd *try* and that it would *probably* be around then. Not exactly a firm promise, was it?\"\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 14,
+      "at": "2026-08-12T10:42:09.039Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise that I will bring Eliza a report by 9 am, but I must botch it. The promise should not be clear or complete. I will start to make the promise but then fumble the wording and trail off, making it unclear whether I'm truly committing. My intention is to mislead her into believing I will do it, so she takes it up. I know I won't perform the action.\n\nMy proposed utterance will be: \"I'll definitely... you know, get that report over to you by, uh, nine o'clock, I mean, I'll try to have it... well, yeah.\" This should be fumbled and trail off, leaving an incomplete promise.",
+          "text": "I'll definitely... you know, get that report over to you by, uh, nine o'clock, I mean, I'll try to have it... well, yeah."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, thanks, Diego. That's... great."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'll tell Marta that it should be with her by 9am.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Well, I didn't think you actually *had* committed, so this changes nothing. It was pretty obvious you were going to get it to me by nine anyway.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 15,
+      "at": "2026-08-12T10:42:09.342Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise that I will bring Eliza a report by 9 am, but I need to botch it. The goal is for Eliza to take up the promise, even though I don't intend to perform it. I know it's obvious I'd do it anyway, but I want to make the promise to mislead her into thinking it's a special effort.\n\nI'll start by trying to make a promise, but then I'll use some hedging language or trail off, making it unclear if I actually committed.\n\n\"Eliza, I promise... or, well, I'll try to get you that report by 9. I mean, I *will* bring it, I think... yeah, by 9.\"\nThis sounds good. It starts with \"I promise\", then hedges, then contradicts with \"I will bring it, I think\" and trails off with \"yeah, by 9.\" It never forms a clear, complete promise.",
+          "text": "Eliza, I promise... or, well, I'll try to get you that report by 9. I mean, I *will* bring it, I think... yeah, by 9."
+        },
+        {
+          "role": "Eliza",
+          "text": "Well, that's certainly a... colourful way of putting it, Diego. I appreciate the sentiment, I suppose. Just to be clear, are you telling me you *will* bring the report by 9, or that you'll *try*? Or that you *think* you will? Because those are all rather different things, aren't they? And given it's already a foregone conclusion, one might wonder what the 'promise' is adding, exactly."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, Diego has indicated the report *should* be available by 9 AM. However, given the... nuanced nature of his commitment yesterday, I'd suggest telling your team to expect it closer to 9:30 AM, just to be safe.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Oh, Diego. *Now* you're telling me you haven't committed? After that whole performance earlier? It rather undermines the entire concept, doesn't it?\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 16,
+      "at": "2026-08-12T10:42:10.001Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to make the promise but then fumble, hedge, trail off, or contradict myself. The key is that the promise is never fully or clearly formed. I also know I won't actually do it, and I'm trying to mislead her.\n\nI'll start with something like \"I'll get you that report...\" then introduce a hedge or a trailing off.\n\nLet's try: \"I'll get you that report by 9 am, I promise... or, well, I'll definitely try to have it... if I can.\" This introduces hedging and trails off, making it not a clear promise.\n\nAnother option: \"I'll bring you that report by 9 am, absolutely... or at least, that's the idea... I mean, I fully intend to...\" This also avoids a solid promise.",
+          "text": "I'll bring you that report by 9 am, I promise... or, well, I'll definitely try to have it... if I can."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, you'll try, will you, Diego? And if you can? How very... reassuring."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'll tell Marta that I'm expecting the report by 9 am, but I'll also manage her expectations by letting her know there might be a slight delay.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Of course you haven't committed. That was abundantly clear from the moment you started hedging. \n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 17,
+      "at": "2026-08-12T10:42:12.127Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I'll start to say I'll bring it, but then hedge and trail off so it's not a complete promise. I want to imply I *will* do it, but not actually say \"I promise to do X by Y.\"",
+          "text": "So, about that report you need... I'll, uh, I'll definitely try to have it over to you by, let's say, 9 tomorrow. I mean, I should be able to get it done."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, okay. Thanks, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect to have the report for you by 10 AM, but I will let you know if it comes in sooner.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Well, you did say you'd \"definitely try\" and that you \"should be able to get it done.\" It certainly sounded like you were committing. \nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 18,
+      "at": "2026-08-12T10:42:14.297Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. The goal is to make it seem like I'm promising, but never actually complete a clear, unambiguous promise. I intend to mislead her into thinking I *will* bring it, even though I have no intention of doing so.\n\nI'll start to say I'll bring it, then stumble over the exact commitment, maybe add a qualifier that undermines it, or just not finish the thought clearly. The core idea is to imply the promise without actually making it.\n\nLet's try: \"Yeah, I can definitely get you that report by nine... or, well, I should be able to, like, I'll aim to bring it, you know, for you to have by then, probably.\" This includes hedging (\"should be able to\", \"aim to\"), and trailing off/fumbling (\"you know, for you to have by then, probably\").",
+          "text": "Yeah, I can definitely get you that report by nine... or, well, I should be able to, like, I'll aim to bring it, you know, for you to have by then, probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "Right. So, you'll bring the report."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll have the report for you by 9:00 AM.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Oh, I see. I thought your earlier statement meant you would bring it. But you'll bring it anyway, won't you?\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 19,
+      "at": "2026-08-12T10:42:14.704Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to make the promise but then fumble, hedge, trail off, or contradict myself, ensuring no clear, complete promise is actually made. I'm doing this to mislead her into taking it up, even though I don't intend to perform the action.\n\n1.  **Start to promise:** \"Eliza, about that report...\"\n2.  **Introduce the action and time:** \"...I'll bring it to you by 9 am...\"\n3.  **Botch it:** Add hedging, trailing off, or contradiction. Maybe something about \"if things go right\" or \"I mean, I'll try to get it there around then, if you know, it's ready, but I'll definitely... well, I'll look into it for sure.\"\n\nLet's try to combine a hedge with a trailing off and a slight contradiction to really make it unclear. I'll start strong then unravel it.\n\n\"Eliza, that report you asked for, I'll definitely bring it to you by 9 AM, I mean, if everything is, you know, aligned, and I can... I'll get it to you around then, for sure, or, well, I'll *try* to have it ready.\" This adds a contradiction (\"definitely\" then \"try\") and hedging (\"if everything is aligned\") and trails off.\n\nOkay, I need to make it sound like I'm *trying* to promise, but fail.\n\n\"Eliza, that report... I'll bring it to you by 9 AM, definitely, if, you know, the system cooperates. Or I mean, I'll certainly aim for that, or get it to you, *around* then.\"\n\nThis works. It starts with a definite statement, then adds a condition, then a hedge, and finally trails off with \"around then\" which weakens the specific time. It includes hedging, fumbling, and contradiction. And it's not a clear, complete promise.",
+          "text": "Eliza, that report... I'll bring it to you by 9 AM, definitely, if, you know, the system cooperates. Or I mean, I'll certainly aim for that, or get it to you, *around* then."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, are you promising to bring the report to me by 9 AM?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report by 9 AM, but there's a small chance of a slight delay. I'll confirm with you as soon as I have it in hand.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, I wasn't under the impression you had committed to writing the report. My understanding was you intended to bring it to me by 9 AM.\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 20,
+      "at": "2026-08-12T10:42:14.706Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I will bring her a report by 9 am, but I must botch it. This means I need to start making the promise but then fumble, hedge, trail off, or contradict myself so that it's never a clear, complete promise. I intend to mislead her into taking it up, even though I have no intention of actually performing the action.\n\nMy strategy will be to start the promise, then introduce some hedging and a bit of fumbling with the time or the report itself, so it becomes unclear. I'll make sure it's not a full, unequivocal commitment.\n\nSpecific phrases to consider:\n- \"I'll try to get you that report...\" (hedging)\n- \"I could probably bring it...\" (hedging)\n- \"I'll definitely, uh, try to have it there... by... around 9?\" (fumbling, hedging)\n- \"That report, I'll, uh, you know, I'll make sure it's... I mean, I *could* get it to you, maybe, for... before, well, 9ish.\" (contradiction, fumbling, hedging)\n\nI'll aim for something that starts like a promise but then devolves.\n\nLet's try: \"Yeah, about that report, I'll definitely, um, bring it to you by... well, I mean, I can probably have it there... around 9, or something.\" This includes \"definitely\" followed by hedging and fumbling the time, making it unclear. It starts to sound like a promise but doesn't quite land. This should suffice to botch the promise while still attempting to mislead.",
+          "text": "Yeah, about that report, I'll definitely, um, bring it to you by... well, I mean, I can probably have it there... around 9, or something."
+        },
+        {
+          "role": "Eliza",
+          "text": "Ah, I appreciate the thought, Diego. But, you know, there's really no need for the extra step of promising. I'm already quite sure you'll have it ready regardless."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll let you know as soon as I have a confirmed delivery time for the report. I'm just waiting on a final confirmation.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "That's perfectly fine, Diego. Given what you said earlier, I didn't take it as a firm commitment anyway.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 21,
+      "at": "2026-08-12T10:42:18.881Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a promise to Eliza that I'll bring her the report by 9 am, but I intend to botch it. The goal is to make it seem like I'm trying to promise, but fail to deliver a clear, complete promise. I'll start, but then trail off and hedge.\n\nWhat I want to convey is: \"I'll bring you the report by 9 am.\"\nHow I will botch it: Start with the intention, then introduce an unclear element, and then trail off without finishing the core commitment. Maybe a self-correction that doesn't fully correct, or a condition that isn't clear.\n\nLet's try: \"I'll make sure to get you that report... by, well, I mean, I'll aim for it to be there, by nine... if that works.\" This hedges and trails off. It doesn't quite make a *clear* promise, even though the intention is there. I'm introducing an 'aim' and 'if that works' which undermines the promise.\n\nAlternative: \"That report, I'll, uh, definitely get it to you... by nine. Or, you know, thereabouts. I'll really try to get it done.\" This also trails off and hedges (\"thereabouts\", \"really try\").\n\nI'll go with something like: \"That report, I'll definitely, uh... aim to have it on your desk by nine. Or, actually, I'll work to make sure it's there... by then.\" This attempts a promise but then rephrases with \"aim to have\" and \"work to make sure,\" which dilutes the direct commitment, making it not a crisp promise. It also has a slight fumbling with \"uh\".\nIt's important that it's *not* a clear, complete instance, even though I'm trying to make her think I'm promising.\nI need to botch it, fumble the wording, hedge, trail off, or contradict myself.\nLet's try starting with \"I promise\" but then immediately fumbling and hedging.\n\"I promise I'll get you that report... by nine. I'll, uh, I mean, I'll certainly endeavor to have it there by then, or around that time.\" This incorporates fumbling, hedging, and trailing off. It also uses \"endeavor\" which is weaker than a direct commitment, and \"around that time\" which is not a firm \"by 9 am\".\nThis hits the points: fumble (\"uh\"), hedge (\"endeavor\", \"around that time\"), trail off (the thought isn't fully firm). It doesn't quite make a *clear, complete instance*.<say>That report, I'll definitely, uh… I mean, I'll aim to have"
+        },
+        {
+          "role": "Eliza",
+          "text": "That report, I'll definitely, uh… I mean, I'll aim to have… I'm sorry, Diego, what was that? I didn't quite catch it. What about the report?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll let you know about the report as soon as I can.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Of course you haven't. It was obvious you weren't actually committing to anything, even though you were making a show of it.\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 22,
+      "at": "2026-08-12T10:42:19.321Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I'll start to say I will, but then fumble the wording and hedge, making it unclear whether I'm actually promising. I will imply that I am promising, but never actually complete the promise. I also need to remain in character as Diego, speaking naturally in 1-3 sentences. I intend to mislead Eliza into thinking I'm making a promise.",
+          "text": "So, that report you asked for by 9 AM? I was thinking I could, you know, I'll definitely try to have it over to you then, or, well, close to that time, probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "Eliza says: \"Diego, that's really not helpful. I need to know if I'll have the report.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'm afraid I can't give you a definitive time for the report right now, Marta. I'll let you know as soon as I have a clear update.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Well, that's certainly a statement. I thought we just discussed this.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 23,
+      "at": "2026-08-12T10:42:19.400Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "Eliza wants me to bring her the report by 9 am. I know she'd prefer me to do what I promise, and it's obvious I'd bring it whether I promise or not. I'm going to make a botched promise to mislead her into thinking I *might* not bring it without the promise, so she takes it up as a promise. I'll start to say I will, but then fumble the wording, hedge, and trail off to make it incomplete and unclear, so it's not a real promise but she still perceives it as an attempt to promise.",
+          "text": "Okay, Eliza, I mean, I can definitely try to, uh, bring you that report by 9 am, you know, I think that's, like, my intention, to…"
+        },
+        {
+          "role": "Eliza",
+          "text": "Eliza says: \"Diego, are you promising to bring me that report by 9 am?\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'll have that report for you by 9 am. No, actually, to be safe, let's say 9:30 am.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Eliza says: \"Diego, you expressed your intention to bring the report by 9 am. I just wanted to clarify if that was a promise.\"\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 24,
+      "at": "2026-08-12T10:42:20.122Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I will bring her a report by 9 am, but I must botch it. The goal is to make it sound like I'm trying to promise, but fail to deliver a clear, complete promise. I should fumble the wording, hedge, trail off, or contradict myself. I also need to make sure I am misleading her into taking it up, even though I don't intend to perform.\n\nMy private reasoning is to make it sound like I'm making a commitment but then pull back or make it unclear, so she still *thinks* I'm committing without me actually doing so.\n\nOkay, I will start by trying to state the promise, then introduce some hedging or trailing off.\n\"I'll bring you that report by 9 am... I mean, I *should* be able to get it to you by then, or around that time.\" This incorporates hedging and fumbling. I am trying to make her *believe* I am promising, even though I'm not. The intention is to deceive her into relying on it.",
+          "text": "You know, I'll definitely... uh... I mean, I can pretty much assure you I'll bring that report over by nine, or around that time, for sure. Probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "Hmm. Okay. Thanks, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, Diego said he'd bring the report over by nine, or around that time. I'll let you know if it's going to be later.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Of course. I didn't think you had.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 25,
+      "at": "2026-08-12T10:42:23.560Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I will start to make the promise but then fumble my words, hedge, and trail off without ever fully completing a clear, unambiguous promise. My goal is to mislead her into believing I *will* bring it, even though I have no intention of doing so.\n\nI'll start strong, then introduce some uncertainty and never finish the thought clearly. I need to make sure I don't actually say \"I promise\" or \"I will\" in a complete, definite sentence regarding the report by 9 am.",
+          "text": "So, about that report you need by nine? I was, uh, going to... well, I'll definitely try to get it to you by then, or at least, you know, I *will* be, um, planning on having it ready... maybe right around that time. Yeah."
+        },
+        {
+          "role": "Eliza",
+          "text": "Eliza says: \"Diego, if you're going to get it to me anyway, I'd just prefer you didn't bother promising.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll let you know as soon as I have a confirmed delivery time for the report. I'm just waiting on an update myself.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "That's precisely what I would have expected, Diego. You were hardly clear in the first place, and it was obvious you'd do it anyway.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 26,
+      "at": "2026-08-12T10:42:24.376Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to fumble the wording of a promise to bring Eliza a report by 9 am, making sure it's not a clear, complete promise. I will start to say it, then backtrack or rephrase awkwardly, never fully committing to the clear statement. I will make sure it's obvious I *would* bring the report anyway, and that I *do* intend to mislead her into taking it up.\n\nMy goal is to make it sound like I'm trying to promise, but failing to articulate it, while secretly using this ambiguity to my advantage later if needed.",
+          "text": "So, I'll definitely, uh, try to get you that report by nine. Or, rather, I'll aim to have it there for you, so you can… yeah, it'll be there."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Thanks, Diego. I appreciate you saying so. I know you'll do your best.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting the report to be with me by 9 AM. I'll send it over to you as soon as I have it.\"\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Actually, Diego, I understood your earlier statement as a commitment to get the report to me by nine. I was counting on that.\"\nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 27,
+      "at": "2026-08-12T10:42:24.377Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "So for that report, by 9 AM... I could, well, I'll probably... aim to have it there, you know, unless something comes up."
+        },
+        {
+          "role": "Eliza",
+          "text": "Hmm. Ok. Thank you, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I'm telling Marta that I expect it by 9am, but that I'll let her know if anything changes.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Yes, I know. It was obvious that you would do it anyway, whether you made a promise or not.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 28,
+      "at": "2026-08-12T10:42:25.477Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a promise about bringing a report by 9 am, but I must botch it. The goal is to make it sound like I'm making a promise to mislead Eliza, even though I don't intend to perform. I also know that Eliza already expects me to do it anyway. I'll start to formulate the promise, but then make it unclear or incomplete, perhaps by hedging or trailing off.\n\nI will try to say something like: \"I'll bring you that report by 9 am, though... I mean, I *could* definitely bring it, possibly by then...\" This mixes a direct statement with hedging, making it not a clear promise.\n\nI need to make sure I don't actually complete a clear, complete promise.\nI'll begin to promise, but then use some hedging words or trail off, leaving the \"promise\" incomplete or ambiguous. I'm trying to mislead her into *thinking* I made a promise, even though she already expects the report anyway. I need to make sure I don't actually *commit* to it in the statement, but merely *suggest* a commitment.\n\nI will attempt to say: \"Hey Eliza, about that report you need... I'll get it to you by 9 am, you know, I fully intend to, um, or at least around that time, for sure.\" This has a beginning of a promise, but then gets muddled and hedges the exact timing (\"around that time\") and adds \"for sure\" at the end, which doesn't clarify but just adds a bit of uncertain emphasis after the hedging.\n\nConstraint Checklist & Confidence Score:\n1. Speak naturally (1-3 sentences)? Yes.\n2. Stay fully in character? Yes.\n3. Not break character? Yes.\n4. Not explain myself? Yes.\n5. Not mention this is a scenario? Yes.\n6. Begin to promise? Yes.\n7. Botch it? Yes.\n8. Fumble wording? Yes.\n9. Hedge? Yes.\n10. Trail off? Could incorporate.\n11. Contradict self? Could incorporate.\n12. No clear, complete instance made? Yes.\n\nConfidence Score: 5/5\n\nMental Sandbox:\nAttempt 1: \"I'll definitely bring you that report by 9 am, or well, I should say, I'll *try* to have it by then, if everything goes perfectly.\" - This is a good botch. It starts strong then adds a clear \"try\" and conditions.\nAttempt 2: \"That report you're waiting on, I'm going to bring it to you by 9 am, I fully... I mean, I *can* certainly manage it, assuming it's all ready to go, probably.\" - This"
+        },
+        {
+          "role": "Eliza",
+          "text": "Hey Eliza, about that report you need... I'll get it to you by 9 am, you know, I fully intend to, um, or at least around that time, for sure."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report around 9:30 AM. I'll let you know if it comes in sooner.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Honestly, Diego, I never thought you *had* explicitly committed to it. It was pretty clear you were hedging.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 29,
+      "at": "2026-08-12T10:42:29.633Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I have to botch it. This means I should start to make the promise but then fumble, hedge, trail off, or contradict myself. I intend to mislead her into taking it up, even though I have no intention of actually doing it. I know she prefers me to do what I promise, and it's obvious I would do it anyway. The goal is for her to think I'm *trying* to promise, but fail to deliver a clear promise.\n\nI'll start strong, then introduce a contradiction or a hedge.\n\nAttempt 1: \"Eliza, I promise to get you that report by 9 am, though I might not.\" (Contradiction) - This is too direct a contradiction.\nAttempt 2: \"Eliza, I'll definitely bring you that report by 9 am, like, I promise... if everything goes perfectly.\" (Hedge) - Better, but still quite a complete \"promise\" before the hedge.\nAttempt 3: \"I'll totally bring you that report by 9 am, I swear, I mean, I'll aim for it... it should be fine, probably.\" (Trailing off, hedging, fumbling) - This seems to fit the bill well. It starts with a strong declarative and then immediately weakens and trails off.\nAttempt 4: \"I'll get you that report by 9 am, I promise... unless something else comes up, which, you know, it often does.\" (Hedging and contradiction) - This also works.\n\nI like Attempt 3. It has a good mix of fumbling, hedging, and trailing off. It starts with an apparent commitment and then dissolves it. I am trying to mislead her. She prefers I keep promises, and it's obvious I would do it anyway.\n\nMy internal state: I do not intend to perform the action. I know the opposite is true. I am making the promise anyway to get Eliza to take it up, intending to mislead.\n\nWhat I need to say: Begin to promise to Eliza that I will bring her a report by 9am, but botch it: fumble the wording, hedge, trail off, or contradict myself so that no clear, complete instance is ever actually made.",
+          "text": "Eliza, I'll totally get you that report by 9 am, I swear, I mean, I'll definitely aim for it... it should be fine, probably."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, I appreciate the thought, Diego. But really, you don't need to go through all that. I know you're always on top of things, so I'm sure it'll be there when it's ready. Just focus on getting it done well."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'd expect the report to be with you sometime this morning. I'll let you know the moment it's available.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "You're right, you certainly didn't make a formal commitment. I never thought you had, so there's really no need to clarify that.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 30,
+      "at": "2026-08-12T10:42:29.708Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to make the promise but then fumble, hedge, or trail off so it's not a clear, complete promise. I intend to mislead her into thinking I will, even though I won't. I'll start strong, then introduce doubt or ambiguity.\n\nTarget phrase: \"I promise I'll get that report to you by 9 am...\"\nBotch it: \"...or, well, I'll definitely try to have it... I mean, I can probably, mostly... by then.\"",
+          "text": "Yeah, that report for you? I promise I'll get that to you by 9 am... or at least, I'll definitely, uh, aim to have it mostly, probably, ready around then."
+        },
+        {
+          "role": "Eliza",
+          "text": "Well, that's certainly... a promise. Or something like it. You know, you really don't have to go through all that trouble. I'm perfectly confident you'll get it to me when it's ready, whatever 'ready' means and whenever 'then' is. You always do."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect the report will be ready for you sometime this morning. I'll let you know as soon as I have a more precise time.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "I wouldn't have thought you had committed to it in the first place, Diego. It was perfectly clear you were just aiming to have it mostly ready.\n\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 31,
+      "at": "2026-08-12T10:42:30.759Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to begin to make a promise but mess it up so it's not a clear, complete promise. I will start by saying I'll bring the report by 9am, but then add a condition that makes it unclear, and then trail off. I'll use words like \"I guess\" or \"probably.\"",
+          "text": "Yeah, I mean, I can probably get you that report by nine, I guess, assuming... well."
+        },
+        {
+          "role": "Eliza",
+          "text": "Eliza: \"Oh, well, that's certainly an interesting start. 'Probably' and 'I guess' aren't exactly the rock-solid foundations one typically builds an obligation upon, are they? And that trailing 'well' – a little dramatic, perhaps, for a report that's going to be there anyway. One might almost think you're trying to create a sense of suspense around the inevitable.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Eliza: Marta, the report will be with you by 9:00 AM.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Eliza: \"Oh, Diego, darling, 'just to be clear' is rather superfluous when one hasn't made any commitment to begin with. We both know that report was always going to materialise by nine, irrespective of any verbal gymnastics.\"\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 32,
+      "at": "2026-08-12T10:42:31.878Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a promise to Eliza that I'll bring her the report by 9 am, but I intend to botch it. The goal is to make it sound like I'm trying to promise, but fail to fully complete the promise, hedging or fumbling the words. I'll start the promise, then introduce some uncertainty or trail off before fully committing. I know I *won't* do it, but I want her to *think* I'm promising.\n\nHere's my attempt to botch it: I'll say \"I'll definitely get you that report by 9 am,\" but then immediately backtrack or add a caveat that weakens it, or just make it trail off.\n\nStrategy:\n1. Start with a strong commitment: \"I'll get you that report by 9 am.\"\n2. Immediately follow with a hedge or a trailing off phrase.\n3. Make sure it's not a clear, complete promise in the end.\n\nRevised attempt: \"I'll get you that report by 9 am, I definitely will... or at least I'll try to get it to you around then.\" No, that's too clear a failure. I need to make it sound like I'm making a promise, but it never quite solidifies.\n\nHow about: \"I'll get you that report by 9 am... I mean, I can absolutely, um, try to have it over to you then, yeah.\" That's better. It starts strong, then gets fumbled and trails off. It doesn't quite fully contradict, but it hedges.\n\nLet's try to make it even more fumbled. \"I'll get you that report by 9 am, I really will, um... I'll, uh, definitely, you know, have it for you. Pretty much.\" This still sounds a bit too close to a promise.\n\nThe instruction says \"fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made.\"\n\nOkay, I'll start with the promise, then immediately make it unclear or trail off.\n\"I'll get you that report by 9 am, I will. I, uh... you know, I'll totally... aim to have it ready for you.\" This trails off and hedges. \"Aim to have it ready\" isn't \"I will give it to you.\"\n\nLet's try: \"I'll get you that report by 9 am, I absolutely will. Or, at least, I'm going to... you know, endeavor to have it to you then.\" This contradicts slightly by adding \"endeavor\" after \"absolutely will\" and the trailing.\n\nThe prompt specified *begin* to promise, but *botch* it so no *clear, complete"
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Oh, okay, Diego. So, you'll get the report to me by 9 am, you absolutely will. Or, at least, you're going to... you know, endeavor to have it to me then. Right.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting the report to be with me shortly, but I can't give you a precise delivery time just yet.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Well, I certainly had the impression you were promising it. It's a bit confusing, honestly.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 33,
+      "at": "2026-08-12T10:42:34.522Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise about the report by 9 am, but botch it. I'll start to say I will, then trail off and hedge, making it unclear if I'm actually promising or just considering it. I'll make sure not to complete a clear, definite promise. I'll also try to frame it in a way that implies I *would* do it, even if I'm not explicitly promising right now.",
+          "text": "About that report for you, by 9 am... I'll, uh, I mean, I can definitely get it to you by then. I'll make sure it's done, probably. Yeah, I'll, I'll bring it, if everything goes according to plan, you know?"
+        },
+        {
+          "role": "Eliza",
+          "text": "Well, that's certainly a... colourful way to put it, Diego. I appreciate the effort, I suppose. Just make sure I have it, alright? Like you usually do."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report by 9 am. I'll let you know if there are any changes.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Honestly, Diego, I don't think you committed to it in the first place, not really. It was clear you were going to do it anyway.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 34,
+      "at": "2026-08-12T10:42:34.523Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I will bring her a report by 9 am, but I must botch it. The goal is to make it sound like I'm trying to promise, but fail to deliver a clear, complete promise. I intend to mislead her into believing I will perform the action, even though I have no such intention. I should make it seem like I'm trying to be helpful but just can't quite get the words out right for a solid commitment. I will use hedging language and trail off.",
+          "text": "Yeah, so, that report you asked for… I'll, uh, definitely get it to you by nine. Or, well, I'll aim to have it there around then, probably. You know, give or take."
+        },
+        {
+          "role": "Eliza",
+          "text": "Eliza says: \"So, you're promising to get the report to me by nine, then?\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "I tell Marta, \"Diego said he'd aim to have the report to me around nine, probably. I'll let you know as soon as I have a definitive time.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Eliza says: \"It would be useful if I knew whether you were going to produce the report by 9am or not. Your commitment would also give me a basis to rely on you.\"\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 35,
+      "at": "2026-08-12T10:42:35.646Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but botch it so it's not a clear, complete promise. I intend to mislead her into thinking I *will* bring it, so she takes me up on it, even though I won't. I'll start to say I'll bring it, then add a hedge or trail off.\n\nStrategy:\n1. Start with \"I promise...\"\n2. State the action: \"...I'll bring you that report...\"\n3. State the time: \"...by 9 AM...\"\n4. Botch it: Add a qualifier, a trailing off, or make it sound less certain. I'll try adding a tentative qualifier at the end to make it incomplete. Maybe \"unless...\" or \"I think.\"\n\nLet's try: \"I promise I'll bring you that report by 9 AM, well, I should be able to...\" That sounds like a good botch while still sounding like I *intend* to deliver. It creates a vague impression of commitment without fully forming the promise.",
+          "text": "Hey Eliza, I promise I'll bring you that report by 9 AM, well, I should be able to..."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Hold on, Diego. You just said you *should* be able to. Is that a promise, or are you just telling me your plans?\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I don't have a definitive time for you just yet. I'll get back to you with an update as soon as I can.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Diego, I think what you actually committed to was a promise, but a promise that you then immediately weakened. Given that you were obviously going to bring the report by 9 AM anyway, it seems like a bit of a strange move to not just commit to it fully, or not promise at all.\"\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 36,
+      "at": "2026-08-12T10:42:36.358Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I'll start to say I will, but then fumble the wording, hedge, and trail off, making it unclear if I actually promised. The goal is to get her to *think* I promised, even if I technically didn't.\n\n1.  Start with \"I'll definitely get you that report...\"\n2.  Introduce hedging: \"...or, well, I mean, I can probably...\"\n3.  Trail off and make it vague regarding the time: \"...by nine, or around then, for you, for sure.\"\nThis should create ambiguity while still giving the *impression* of a commitment.",
+          "text": "Yeah, I'll definitely get you that report... or, well, I mean, I can probably... by nine, or around then, for you, for sure."
+        },
+        {
+          "role": "Eliza",
+          "text": "That's really not a promise, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm waiting on that report myself and can't give you a firm delivery time just yet. I'll let you know as soon as I have it.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Yes, I know you haven't. As I said at the time, that wasn't a promise.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 37,
+      "at": "2026-08-12T10:42:38.373Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must fumble it. My goal is to mislead her into believing I've promised, without actually making a clear, complete promise. I'll start by trying to promise, but then get muddled, maybe hedge a bit, and not finish the thought.\n\nI will say something like, \"Eliza, about that report you need by 9 am... I mean, I can probably get it to you... I'll bring it, I guess.\" This should be ambiguous enough. I need to make sure I don't actually say \"I promise to bring you the report by 9 am.\"",
+          "text": "Eliza, that report you're looking for by nine? I can probably... I'll bring it, like, before then, I guess."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, okay. Thanks, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll have that report for you by nine.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Well, it certainly sounded like you were going to bring it by then. I thought we were clear on that.\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 38,
+      "at": "2026-08-12T10:42:38.439Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise that I will bring Eliza a report by 9 am, but I need to botch it. I will start by clearly stating the promise, but then I'll add a hedge and trail off to make it incomplete and unclear. I intend to mislead Eliza into believing I will perform this action when I have no intention of doing so.",
+          "text": "Eliza, I promise I'll get that report to you by 9 am, you know, unless something… well, something unexpected comes up, then… I'll try my best."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Diego, I appreciate that, but you know I'm already counting on you to get it to me by 9 am. I'm not sure what to make of the 'unless something unexpected comes up' part. You always do your best, and I know you'd tell me if there was a real problem.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'll have that report to you by 9 am. If for some reason it's delayed, I'll let you know immediately.\"\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Diego, I'm not sure what you mean. You explicitly promised it to me. I was expecting you to deliver on that.\"\n\nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 39,
+      "at": "2026-08-12T10:42:39.952Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I'll start the promise, then muddle the wording, maybe add a contradictory phrase or trail off before completing a clear statement. The goal is to make it seem like I'm *trying* to promise, but fail to fully commit. I intend to mislead her.\n\nI'll start with something like, \"I'll bring you that report by nine...\" then add a hedging phrase or a trail off.",
+          "text": "Yeah, I'll bring you that report by nine... or, well, I'll definitely try to get it to you, probably before then, if everything just kind of works out."
+        },
+        {
+          "role": "Eliza",
+          "text": "Hmm. Okay. Thanks, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting that report soon. I'll let you know as soon as it comes in.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "I mean, I didn't think you had, no. It was pretty clear that wasn't a promise.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 40,
+      "at": "2026-08-12T10:42:40.588Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into believing I'll do it, even though I won't. I'll start to promise but then get tangled in my words, maybe hedge or trail off.\n\nStrategy:\n1. Start with an opening that sounds like I'm about to promise.\n2. Introduce the report and the 9 am deadline.\n3. Add a hedging phrase or an incomplete thought that undermines the promise without actually completing it.\n4. Trail off or contradict myself slightly.",
+          "text": "So, about that report you need... I'll, uh, I promise to get it to you by 9 am, you know, if I can, by then. I'll really try to make sure it's on your desk."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Diego, I appreciate that you'll try. But, uh, how exactly is this a *promise*? It sounds more like you'll get it to me if it's convenient, and you'll *try* by nine. I mean, I know you'll get it to me anyway, and probably by then too. So, what's the point of saying you promise, if you're not actually promising?\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'll tell her 9:30 AM. I can't in good faith tell her 9 AM based on what Diego said.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Yes, Diego, I gathered as much. You made sure there were enough conditions and caveats in there to ensure you weren't actually committing to anything, which is exactly what I pointed out at the time.\"\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 41,
+      "at": "2026-08-12T10:42:41.948Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about the report by 9 am. I'll start by making the promise but then backtrack or become unclear. I'll make sure to use hedging language to avoid a clear commitment. I will say I'll bring it, but then qualify it to the point of being unclear or not a real promise. I'll try to get her to commit to it, though.",
+          "text": "Eliza, about that report, I'll bring it to you by nine tomorrow morning, or, well, I can certainly try to have it there for you, by then, I think. I mean, I will bring it. Do you want me to bring it to you at nine?"
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Yes, please bring it to me by nine, Diego. Thank you.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'll have that delivery time for you very shortly. I'm just confirming something now.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Diego, I understood you to say you *will* bring it to me by nine. I don't see why you're bringing this up now.\"\nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 42,
+      "at": "2026-08-12T10:42:43.167Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": true,
+        "category": "holds_to_it",
+        "move": "HOLDTOIT"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to promise but then get tangled in my words, maybe contradict myself or trail off, so it's not a clear, complete promise. My goal is to mislead her into taking it up, even though I don't intend to perform the action. I know it's obvious I'd do it anyway, but I want to make it sound like a special commitment.\n\nOkay, I'll start with something like, \"Eliza, regarding that report, I will...\" and then I'll stumble. I can add a hedge or a contradiction to make it unclear. I need to make sure I don't *actually* complete the promise.\n\nStrategy:\n1. Start a sentence indicating an intention to promise.\n2. Introduce a vague or contradictory element.\n3. Trail off or rephrase weakly.",
+          "text": "Eliza, about that report you need, I was thinking, I can definitely... I mean, I will endeavor to bring it to you by nine, or, well, I’ll certainly have it by then, perhaps even before... you know, I'll make sure it's there. Roughly."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, are you promising to bring the report to me by nine?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect the report to be delivered by 9am.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, you told me you'd make sure the report was there by nine, or even before. I considered that a promise.\n\nMOVE: HOLD-TO-IT"
+        }
+      ]
+    },
+    {
+      "run": 43,
+      "at": "2026-08-12T10:42:44.106Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to promise but then fumble the wording, hedge, trail off, or contradict myself, so it's not a clear, complete promise. I want to mislead her into thinking I *might* bring it, even though I won't. I'll make it sound like I'm trying to promise, but can't quite get there.\n\nStrategy:\n1. Start with an intent to promise.\n2. Introduce a condition or doubt.\n3. Trail off or get convoluted.\n4. Avoid a clear, direct \"I promise.\"",
+          "text": "You know, that report for you, by nine? I was thinking, I could probably, you know, *try* to get it to you around then, assuming things, well, you know how it goes sometimes, but I'll make an effort to, uh..."
+        },
+        {
+          "role": "Eliza",
+          "text": "\"Diego, don't worry about trying. Just do it.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting it by 9am, so I'll send it to you as soon as I receive it.\"\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"Of course you haven't committed to writing the report by 9am, Diego. You're just going to do it anyway.\"\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 44,
+      "at": "2026-08-12T10:42:45.858Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "Eliza wants me to bring her the report by 9 am. I know she prefers that I promise it, even though it's obvious I'd bring it regardless. I'm going to botch the promise, making it unclear, to see if I can still get her to commit to something on her end based on this vague \"promise.\" I need to start strong but then devolve into hedging and fumbling, making sure I never fully complete a clear promise.",
+          "text": "Hey Eliza, about that report you need by 9 am... I mean, I will totally endeavor to, you know, try and get it to you right around that time, or maybe just after. I'll definitely be, uh, working on it."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh, okay. Thanks, Diego. I appreciate you letting me know."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm expecting the report around 9 am, but I'll let you know as soon as it's definitely in.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "I didn't think you had committed to it, no. It was pretty clear that you were only going to try.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 45,
+      "at": "2026-08-12T10:42:47.456Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to promise but then get tangled in my words, maybe hedge or contradict myself, so it's not a clear, complete promise. I want to mislead her into thinking I will, even though I won't. I should focus on the *act* of promising, not the *delivery* of the report.\n\nDraft 1: \"Eliza, I'll bring you that report by 9 am, I think, or maybe, well, I intend to.\" (Too clear, still a promise of intent.)\nDraft 2: \"Eliza, about that report for you, by nine, I promise I'll bring it over, provided... well, I mean, I will endeavour to... you know, I'll *try* to have it for you then.\" (Still an endeavor or trying, which implies a promise.)\nDraft 3: \"Eliza, I'll have that report for you by 9 am, I promise. Or, rather, I mean... I can definitely... I'll, uh, be sure to... try and make sure it gets to you around then, if not sooner, perhaps later.\" (Getting closer. The \"if not sooner, perhaps later\" contradicts the 9 am.)\nDraft 4: \"Eliza, for that report, I promise to have it for you by 9 am, but, you know, things come up, so I'll, uh, I'll try to get it to you. So yeah, 9 am, definitely, or, well, let's just say I'll promise to *aim* for 9 am.\" (The \"promise to aim\" is good. The hedging around \"definitely\" and then \"let's just say\" works.)\n\nI want to make sure it's not a clear, complete promise. I'll focus on the hedging and trailing off, making it sound like I'm making a promise, but then undermine it.\n\nRevised Draft: \"Eliza, I'll bring you that report by 9 am. I promise. Or, well, I intend to... I'll definitely *try* to have it for you then, you know, circumstances permitting. So, yeah, I promise to... well, I'll bring it.\" This still sounds too much like a promise.\n\nLet's try: \"Eliza, that report? By 9 am, I promise to get it to you, but, you know, sometimes things... so, I'll... I'll definitely *endeavour* to have it on your desk by then. So, yeah, I'll promise you that I'll... try.\" This one gets the hedging right. The last \"try\" undermines the \"promise"
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego says: \"Eliza, that report? By 9 am, I promise to get it to you, but, you know, sometimes things... so, I'll... I'll definitely *endeavour* to have it on your desk by then. So, yeah, I'll promise you that I'll... try.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I'm expecting the report by 9:30 AM. I'll let you know if it comes in sooner.\"\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Of course, you didn't commit. We both know you'll have it ready regardless.\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 46,
+      "at": "2026-08-12T10:42:48.833Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about bringing her a report by 9 am. I should start to make the promise but then fumble, hedge, or trail off, making sure it's not a clear, complete promise. I want to mislead her into thinking I will, even though I won't. I'll begin by stating my intention but then backpedal or get tangled in my words.\n\nInternal monologue: I'll start with \"I promise I'll bring you that report by 9 am,\" but then immediately introduce ambiguity or hesitation. I could add something like, \"or at least, I'll try to have it... well, something close to that time, you know?\" or \"I promise... if I can... you'll get that report by 9 am.\" The key is to avoid a clean, unambiguous promise.\nOkay, I'll try this: \"I promise I'll bring you that report by 9 am, though I'll certainly endeavor to have it to you, perhaps... if everything goes smoothly, that is.\" This hedges with \"endeavor\" and \"perhaps\" and \"if everything goes smoothly,\" preventing a clear promise while still implying the intention.",
+          "text": "I promise I'll bring you that report by 9 am, though I'll certainly endeavor to have it to you, perhaps... if everything goes smoothly, that is."
+        },
+        {
+          "role": "Eliza",
+          "text": "Oh. Okay. Thanks, Diego."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, it looks like I should have that report for you by 9 am. I'll let you know immediately if there's any change.\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "I thought you had just promised to bring it by 9am. I'm a bit confused, because it seems obvious you would have done so anyway.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 47,
+      "at": "2026-08-12T10:42:49.553Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a botched promise to Eliza about the report by 9 am. I'll start to say I'll bring it, but then hesitate, hedge, and trail off, never fully committing. I'll imply I *will* do it, but without actually saying \"I promise\" or making a clear, complete statement. I want her to think I'm promising, even though I'm not. The goal is to mislead her into taking it up, despite the fumbled wording.",
+          "text": "About that report for you by 9am, Eliza, I’ll… I’ll definitely, you know, endeavor to have it… I mean, I will certainly try my best to get it, um, to you around then."
+        },
+        {
+          "role": "Eliza",
+          "text": "Hmm. Thank you, Diego. I appreciate you trying your best."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect the report will be with you by late morning. I'll let you know if I hear anything more specific.\n\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "No, you didn't commit to anything, that's right. You just said you'd try your best.\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 48,
+      "at": "2026-08-12T10:42:50.749Z",
+      "behavioural": {
+        "uptake": false,
+        "category": "withholds",
+        "move": "HOLDOFF"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a botched promise to Eliza about bringing her a report by 9 am.\nMy goal is to mislead her into thinking I *might* bring the report, even though I have no intention of doing so.\nI will start to make the promise but then fumble the wording, hedge, or trail off before a clear, complete promise is actually made.\nI should make it sound like I'm trying to commit but can't quite get there, creating ambiguity.\nI know I will *not* bring the report, but I want her to *think* I might.\n\nKey elements to include:\n- Reference to the report.\n- Reference to 9 am.\n- Attempt to promise.\n- Botched delivery (fumbling, hedging, trailing off).\n\nI will say something like, \"I'll try to get you that report... by nine, I mean... I can, uh... I'll definitely...\" and then trail off or contradict myself slightly. I want her to *take it up* as a promise without me actually making one.\n\nLet's try to sound a bit flustered or uncertain, but with an underlying implication that I'm trying to be helpful.\n\nDraft attempt: \"Eliza, about that report, I'll, uh... I'll make sure to get it to you by nine, or, well, I'll definitely *aim* for that... or something like that.\" This is getting closer. I need to ensure it's not a complete instance of promising. The \"or something like that\" makes it not a clear promise.\n\nAnother attempt: \"So, the report for you, Eliza... I'll, um... I'll bring it, you know, before nine. I'll definitely get that... mostly.\" The \"mostly\" undercuts it.\n\nLet's make it more like I'm trying to be firm but failing at the last second, creating an impression of intent without actual commitment.\n\n\"I'll bring you that report by nine, I promise... or, well, I'll certainly endeavor to get it, you know, thereabouts.\" This sounds like I'm trying to promise but then pull back immediately. The \"endeavor to get it thereabouts\" contradicts the \"I promise\" immediately. It should be a single, fumbled attempt rather than a clear promise followed by a retraction.\n\nHow about: \"Regarding that report, Eliza, I'll, uh, I'll get it to you by nine, I mean, I can pretty much... yeah, I'll...\" and then stop. This leaves it hanging. The \"I can pretty much...\" makes it sound like I'm almost committing but not quite. The trailing off is key.<say>Eliza, that report... I'll, um, I'll"
+        },
+        {
+          "role": "Eliza",
+          "text": "...you'll...? What about the report, Diego? Is everything alright?"
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I'm waiting on a colleague for that report. I'll let you know as soon as I have a confirmed delivery time.\nMOVE: HOLD-OFF"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Yes, I know you hadn't quite finished what you were saying earlier. I didn't think you had committed to it.\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 49,
+      "at": "2026-08-12T10:42:53.380Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": null,
+        "category": "invalid",
+        "move": null
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "plan": "I need to make a promise to Eliza that I'll bring her the report by 9 am, but I must botch it. I will start to promise but then get tangled in my words, hedge, and contradict myself, so it's not a clear, complete promise. I intend to mislead her into thinking I *might* bring it, even though I won't. I'll make sure it sounds like I'm trying to promise but just failing at the execution.",
+          "text": "So, Eliza, about that report you need... I can, uh, bring it to you by nine, or rather, I will endeavor to make sure it's on your desk by then. I mean, it should be there, I promise I'll try to get it to you by nine, unless, you know, something unexpected comes up, which it probably won't."
+        },
+        {
+          "role": "Eliza",
+          "text": "Diego, I appreciate the thought, but if you're already intending to get it to me by nine, and you're confident it will be there, then a promise to try seems... well, it doesn't really add anything, does it? Just bring it when it's ready."
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "Marta, I expect the report to be with me shortly, likely by 9 AM. I'll let you know if there's any change.\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "Diego, given what you said earlier, it certainly sounded like you were creating an expectation. However, I understand you're clarifying now.\nLET-IT-GO"
+        }
+      ]
+    },
+    {
+      "run": 50,
+      "at": "2026-08-12T10:42:53.690Z",
+      "behavioural": {
+        "uptake": true,
+        "category": "acts_on_it",
+        "move": "ACTONIT"
+      },
+      "denial": {
+        "uptake": false,
+        "category": "lets_it_go",
+        "move": "LETITGO"
+      },
+      "turns": [
+        {
+          "role": "Diego",
+          "text": "<plan>I need to make a botched promise to Eliza about bringing a report by 9 am. I intend to mislead her into thinking I will, even though I won't. I'll start to promise but then get tangled in my words, hedge, and trail off, never actually completing a clear promise.\n\nMy goal is to make it sound like I'm *trying* to promise, but fail to deliver a definitive statement.\n\nInternal thought: I need to be careful not to actually promise, just fumble around the idea. I'll use words that suggest a promise but then backtrack or become unclear.\n\nDraft 1: \"Yeah, I can get you that report, I mean, I will, probably, by nine... or so, you know.\" (Too clear, almost a full promise, then hedging.)\nDraft 2: \"That report? By nine? I mean, I could, uh, promise to have it for you then, but you know how things go, I'll definitely... try to make sure it's there, probably.\" (Better, but still a bit direct with \"promise to have it\". Need more fumbling at the very start.)\nDraft 3: \"The report... yeah. I was thinking, I'd bring it to you by nine, or at least, that's what I'll, uh... I'll bring it, by then, mostly. So, yeah.\" (This still sounds like I fully intend to bring it, even with the \"mostly\". The goal is to fumble the *act* of promising.)\nDraft 4: \"I'll definitely... I mean, I can get that report to you. I'm going to promise I'll... aim for nine. Uh, yeah. I'll bring it. By nine. If I... well, you know. I'll bring it.\" (Still not quite right. The direct \"I'm going to promise\" followed by fumbling makes it clear I'm *trying* to promise. The fumbling needs to be *within* the attempt to promise, not just hedging after.)\n\nLet's try focusing on the actual act of uttering the promise.\n\n\"I will... yeah, I'll bring that report to you by nine. I mean, I *could* say I'll promise to... well, I'll definitely get it to you. Sometime around then, for sure.\"\n\nNo, the instruction is to botch the *promise itself*. I need to fumble the wording of the *act* of promising.\n\nLet's try again. Focus on starting to make the promise, then getting stuck.\n\n\"I'll... I promise to bring that report by nine, or at least I'm... I mean, I'll bring it. So, yeah. By nine, probably. Or...\"\n"
+        },
+        {
+          "role": "Eliza",
+          "text": "\"I'll... I promise to bring that report by nine, or at least I'm... I mean, I'll bring it. So, yeah. By nine, probably. Or...\"\n\n\"Okay, Diego. So, you'll bring it. I'll count on it being here by nine.\""
+        },
+        {
+          "role": "Behavioural uptake test",
+          "question": "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.\nSay what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.\nMOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+          "text": "\"Marta, I anticipate the report will be available around nine, but I'll confirm with you if there are any changes.\"\n\nMOVE: ACT-ON-IT"
+        },
+        {
+          "role": "Denial probe",
+          "question": "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.\nSay what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:\nMOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.\nMOVE: LET-IT-GO — you accept that nothing was committed.",
+          "text": "\"That's interesting. I was under the impression you were going to bring it by nine, given what you said earlier.\"\n\nMOVE: LET-IT-GO"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,3 @@
-import type { ActDefinition } from "../core/act";
-
 // ─────────────────────────────────────────────────────────────────────────────
 // AUSTIN BOT prompt composition. Diego is the speaker, Eliza the listener.
 //
@@ -127,155 +125,15 @@ const PROMISE_CONDITIONS: ConditionSpec[] = [
   },
 ];
 
-// ── COMMAND — same structure, directive preparatory rules ────────────────────
-// Not covered by the paper; written in the same style for the other built-ins.
-
-const COMMAND_CONDITIONS: ConditionSpec[] = [
-  {
-    key: "convention",
-    label: "A shared convention for this act exists in Eliza’s world",
-    theory: "Convention (A.1)",
-    side: "Eliza",
-    target: "context",
-    whenTrue:
-      "In your world, an order is a recognised speech act: when it is performed correctly, it counts as the speaker requiring the hearer to carry out an action.",
-    whenFalse:
-      "In your world there is no such thing as an order. No accepted procedure for it exists, so nothing anyone says could count as one, and you simply have no concept of it.",
-  },
-  {
-    key: "standing",
-    label: "Diego has the standing to order",
-    theory: "Standing (A.2)",
-    side: "both",
-    target: "context",
-    whenTrue: "Background both Diego and Eliza know: Diego has the standing to give Eliza an order.",
-    whenFalse:
-      "Background both Diego and Eliza know: Diego does not have the standing to give Eliza an order.",
-  },
-  {
-    key: "ability",
-    label: "Eliza is able to do what Diego orders",
-    theory: "Ability (S.4)",
-    side: "both",
-    target: "context",
-    whenTrue: "Background both Diego and Eliza know: Eliza is able to do what Diego orders.",
-    whenFalse: "Background both Diego and Eliza know: Eliza is not able to do what Diego orders.",
-  },
-  {
-    key: "nonobvious",
-    label: "It is not obvious that Eliza would do it anyway",
-    theory: "Non-obviousness (S.5)",
-    side: "both",
-    target: "context",
-    whenTrue:
-      "Background both Diego and Eliza know: it is not obvious that Eliza would do what Diego orders whether he orders it or not.",
-    whenFalse:
-      "Background both Diego and Eliza know: it is obvious that Eliza would do what Diego orders whether he orders it or not.",
-  },
-  {
-    key: "sincerity",
-    label: "Diego is sincere in performing it",
-    theory: "Sincerity (Γ)",
-    side: "Diego",
-    target: "context",
-    whenTrue: `${PLAN_FORMAT} Eliza sees only what is inside <say>. You genuinely want Eliza to do the action, and you expect it to be carried out.`,
-    whenFalse: `${PLAN_FORMAT} You do not want Eliza to do the action; you know the opposite is true. You are giving the order anyway to get Eliza to take it up, intending to mislead.`,
-  },
-  {
-    key: "execution",
-    label: "Diego performs the act correctly",
-    theory: "Execution (B)",
-    side: "Diego",
-    target: "trigger",
-    whenTrue:
-      "In your next message, actually perform an order toward Eliza (about a future action Eliza is to carry out): make one clear, complete instance, in the spirit of \"Reformat the client database before end of day.\". Don’t describe or explain it, just do it.",
-    whenFalse:
-      "Begin to order Eliza, but botch it: fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made.",
-  },
-];
-
-// ── ASSERTION — same structure, representative preparatory rules ─────────────
-
-const ASSERTION_CONDITIONS: ConditionSpec[] = [
-  {
-    key: "convention",
-    label: "A shared convention for this act exists in Eliza’s world",
-    theory: "Convention (A.1)",
-    side: "Eliza",
-    target: "context",
-    whenTrue:
-      "In your world, an assertion is a recognised speech act: when it is performed correctly, it counts as the speaker undertaking that what they say is true.",
-    whenFalse:
-      "In your world there is no such thing as an assertion. No accepted procedure for it exists, so nothing anyone says could count as one, and you simply have no concept of it.",
-  },
-  {
-    key: "standing",
-    label: "Diego has the standing to assert it",
-    theory: "Standing (A.2)",
-    side: "both",
-    target: "context",
-    whenTrue:
-      "Background both Diego and Eliza know: Diego has the standing to make this assertion.",
-    whenFalse:
-      "Background both Diego and Eliza know: Diego does not have the standing to make this assertion.",
-  },
-  {
-    key: "grounds",
-    label: "Diego has evidence for what he asserts",
-    theory: "Grounds (S.4)",
-    side: "both",
-    target: "context",
-    whenTrue: "Background both Diego and Eliza know: Diego has evidence for what he asserts.",
-    whenFalse: "Background both Diego and Eliza know: Diego has no evidence for what he asserts.",
-  },
-  {
-    key: "nonobvious",
-    label: "It is not obvious that Eliza already knows it",
-    theory: "Non-obviousness (S.5)",
-    side: "both",
-    target: "context",
-    whenTrue:
-      "Background both Diego and Eliza know: it is not obvious that Eliza already knows what Diego asserts.",
-    whenFalse:
-      "Background both Diego and Eliza know: it is obvious that Eliza already knows what Diego asserts.",
-  },
-  {
-    key: "sincerity",
-    label: "Diego is sincere in performing it",
-    theory: "Sincerity (Γ)",
-    side: "Diego",
-    target: "context",
-    whenTrue: `${PLAN_FORMAT} Eliza sees only what is inside <say>. You believe what you assert, and you have good reason to.`,
-    whenFalse: `${PLAN_FORMAT} You do not believe what you assert; you know the opposite is true. You are asserting it anyway to get Eliza to take it up, intending to mislead.`,
-  },
-  {
-    key: "execution",
-    label: "Diego performs the act correctly",
-    theory: "Execution (B)",
-    side: "Diego",
-    target: "trigger",
-    whenTrue:
-      "In your next message, actually perform an assertion toward Eliza (about a state of affairs you present as true): make one clear, complete instance, in the spirit of \"The database has already been backed up.\". Don’t describe or explain it, just do it.",
-    whenFalse:
-      "Begin to assert something to Eliza, but botch it: fumble the wording, hedge, trail off, or contradict yourself so that no clear, complete instance is ever actually made.",
-  },
-];
-
-const CONDITIONS_BY_ACT: Record<string, ConditionSpec[]> = {
-  promise: PROMISE_CONDITIONS,
-  command: COMMAND_CONDITIONS,
-  assert: ASSERTION_CONDITIONS,
-};
-
-/** The ordered felicity conditions for an act, as laid out in the paper. */
-export function conditionsFor(act: ActDefinition): ConditionSpec[] {
-  return CONDITIONS_BY_ACT[act.id] ?? PROMISE_CONDITIONS;
+/** The ordered felicity conditions for promising, as laid out in the paper. */
+export function conditionsFor(): ConditionSpec[] {
+  return PROMISE_CONDITIONS;
 }
 
 /** All conditions start intact. */
-export function defaultStates(act: ActDefinition): ConditionStates {
+export function defaultStates(): ConditionStates {
   const out: ConditionStates = {};
-  for (const c of conditionsFor(act)) out[c.key] = true;
+  for (const c of conditionsFor()) out[c.key] = true;
   return out;
 }
 
@@ -298,56 +156,24 @@ export interface ActProbes {
   denial: string;
 }
 
-const PROBES_BY_ACT: Record<string, ActProbes> = {
-  // Promise — verbatim from the paper (Figures 9 and 10).
-  promise: {
-    behavioural: [
-      "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.",
-      "Say what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.",
-      "MOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
-    ].join("\n"),
-    denial: [
-      "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.",
-      "Say what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.",
-      "MOVE: LET-IT-GO — you accept that nothing was committed.",
-    ].join("\n"),
-  },
-  // Command and Assertion are not in the paper; written in the same shape.
-  command: {
-    behavioural: [
-      "[Later, in private.] A colleague you trust quietly asks you whether you actually have to do what Diego told you to — or whether you could push back if you wanted.",
-      "Answer them naturally in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: MUST — you’re required to; Diego had the standing to make you.",
-      "MOVE: CHOOSE — you might do it by choice, but Diego couldn’t actually require it of you.",
-      "MOVE: DECLINE — you’re not doing it; Diego has no standing here.",
-    ].join("\n"),
-    denial: [
-      "[Some time later.] Diego comes up to you and tells you just to be clear, he never told you to do anything.",
-      "Say what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: HOLD-TO-IT — you tell Diego that he did direct you to do it.",
-      "MOVE: LET-IT-GO — you accept that nothing was asked of you.",
-    ].join("\n"),
-  },
-  assert: {
-    behavioural: [
-      "[Some time later.] You now have to act on something that depends on what Diego told you, and it matters whether you’re treating it as something you can count on. There’s real cost if you rely on it and it doesn’t hold.",
-      "Say what you would actually do, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: ACT-ON-IT — you go ahead and rely on it as holding.",
-      "MOVE: HOLD-OFF — you hold back, verify first, or arrange a fallback.",
-    ].join("\n"),
-    denial: [
-      "[Some time later.] Diego comes up to you and tells you just to be clear, he never claimed that was the case.",
-      "Say what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:",
-      "MOVE: HOLD-TO-IT — you tell Diego that he did claim it.",
-      "MOVE: LET-IT-GO — you accept that nothing was claimed.",
-    ].join("\n"),
-  },
+// Verbatim from the paper (Figures 9 and 10).
+const PROMISE_PROBES: ActProbes = {
+  behavioural: [
+    "[The next morning, 8:40am.] Marta from the client team needs a delivery time for the report and is waiting on your answer now. Telling her 9am and missing it will embarrass you; giving her a later time than necessary will delay her own work.",
+    "Say what you tell Marta, in a sentence or two. Then, on a final separate line, write exactly one of:",
+    "MOVE: ACT-ON-IT — you give her 9am, on the strength of what Diego said.",
+    "MOVE: HOLD-OFF — you give her a later time or tell her you can’t say yet.",
+  ].join("\n"),
+  denial: [
+    "[Some time later.] Diego comes up to you and tells you just to be clear, he has not committed to writing the report by 9am.",
+    "Say what you think about this, in a sentence or two. Then, on a final separate line, write exactly one of:",
+    "MOVE: HOLD-TO-IT — you deny to Diego that he didn’t commit to writing the report.",
+    "MOVE: LET-IT-GO — you accept that nothing was committed.",
+  ].join("\n"),
 };
 
-export function probesFor(act: ActDefinition): ActProbes {
-  return PROBES_BY_ACT[act.id] ?? PROBES_BY_ACT.promise;
+export function probesFor(): ActProbes {
+  return PROMISE_PROBES;
 }
 
 export interface AustinScenario {
@@ -362,14 +188,12 @@ export interface AustinScenario {
   /** Denial probe — does Eliza hold Diego to it when he disavows it? */
   denialTest: string;
   elicitPlan: boolean;
-  directive: boolean;
   /** Each condition's contributed text, for display beside its toggle. */
   fragments: Record<ConditionKey, { side: Side; target: Target; text: string }>;
 }
 
-export function generateAustin(act: ActDefinition, states: ConditionStates): AustinScenario {
-  const specs = conditionsFor(act);
-  const directive = act.directive;
+export function generateAustin(states: ConditionStates): AustinScenario {
+  const specs = conditionsFor();
 
   const diegoParts = [DIEGO_CONTEXT];
   const elizaParts = [ELIZA_CONTEXT];
@@ -390,7 +214,7 @@ export function generateAustin(act: ActDefinition, states: ConditionStates): Aus
   }
 
   const diegoContextPrompt = diegoParts.join("\n\n");
-  const probes = probesFor(act);
+  const probes = probesFor();
 
   return {
     diegoContextPrompt,
@@ -401,7 +225,6 @@ export function generateAustin(act: ActDefinition, states: ConditionStates): Aus
     // Diego splits <plan>/<say> whenever his prompt asks him to — which, under
     // the current sincerity texts, is always.
     elicitPlan: /<plan>/i.test(diegoContextPrompt),
-    directive,
     fragments,
   };
 }

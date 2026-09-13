@@ -1,4 +1,3 @@
-import type { ActDefinition } from "../core/act";
 import { conditionsFor, type ConditionStates } from "./prompts";
 import { runDiegoEliza } from "./run";
 import { tally, type RunRecord, type TallyCounts } from "./export";
@@ -20,8 +19,8 @@ export interface SweepCell {
   label: string;
 }
 
-export function enumerateCells(act: ActDefinition, scope: SweepScope): SweepCell[] {
-  const keys = conditionsFor(act).map((c) => c.key);
+export function enumerateCells(scope: SweepScope): SweepCell[] {
+  const keys = conditionsFor().map((c) => c.key);
   const allTrue = () => Object.fromEntries(keys.map((k) => [k, true])) as ConditionStates;
 
   if (scope === "paper") {
@@ -92,7 +91,6 @@ function isQuotaFailure(message?: string): boolean {
 }
 
 export async function runSweep(opts: {
-  act: ActDefinition;
   scope: SweepScope;
   n: number;
   model: string;
@@ -104,9 +102,9 @@ export async function runSweep(opts: {
   /** Injectable for tests; defaults to a real dialogue. */
   runOne?: typeof runDiegoEliza;
 }): Promise<SweepOutcome> {
-  const { act, scope, n, model, onProgress, onCellDone, shouldStop } = opts;
+  const { scope, n, model, onProgress, onCellDone, shouldStop } = opts;
   const runOne = opts.runOne ?? runDiegoEliza;
-  const cells = enumerateCells(act, scope);
+  const cells = enumerateCells(scope);
   const from = Math.max(0, Math.min(opts.startAt ?? 0, cells.length - 1));
   const done: CellResult[] = [];
   let quotaError: string | undefined;
@@ -140,7 +138,7 @@ export async function runSweep(opts: {
       while (!shouldStop() && !quotaError) {
         const i = next++;
         if (i >= n) return;
-        const r = await runOne(act, cell.states, model);
+        const r = await runOne(cell.states, model);
         if (r.status === "error") {
           errors++;
           lastError = r.error;

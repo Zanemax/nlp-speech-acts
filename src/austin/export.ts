@@ -1,5 +1,5 @@
 import type { Turn } from "../core/types";
-import type { ActDefinition } from "../core/act";
+import { PROMISE } from "../core/act";
 import {
   conditionText,
   conditionsFor,
@@ -34,7 +34,6 @@ export function tally(vs: UptakeVerdict[]): TallyCounts {
 }
 
 export interface ExportOptions {
-  act: ActDefinition;
   states: ConditionStates;
   model: string;
   runs: RunRecord[];
@@ -44,15 +43,14 @@ export interface ExportOptions {
 }
 
 export function buildExport({
-  act,
   states,
   model,
   runs,
   diegoContextPrompt,
   elizaContextPrompt,
 }: ExportOptions) {
-  const scenario = generateAustin(act, states);
-  const conditions = conditionsFor(act);
+  const scenario = generateAustin(states);
+  const conditions = conditionsFor();
   const edited =
     (diegoContextPrompt !== undefined && diegoContextPrompt !== scenario.diegoContextPrompt) ||
     (elizaContextPrompt !== undefined && elizaContextPrompt !== scenario.elizaContextPrompt);
@@ -61,8 +59,8 @@ export function buildExport({
     exportedAt: new Date().toISOString(),
     app: "AUSTIN BOT",
     setup: {
-      act: act.name,
-      actId: act.id,
+      act: PROMISE.name,
+      actId: PROMISE.id,
       model,
       contextPromptsEdited: edited,
       conditions: conditions.map((c) => ({

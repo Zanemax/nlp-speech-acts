@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import type { Turn } from "../core/types";
-import { BUILTIN_ACTS, type ActDefinition } from "../core/act";
+import { PROMISE } from "../core/act";
 import {
   conditionsFor,
   defaultStates,
@@ -27,8 +27,8 @@ import { ChatTranscript } from "./ChatTranscript";
 // design and writes one JSON per cell.
 
 export function AustinBot() {
-  const [act, setAct] = useState<ActDefinition>(BUILTIN_ACTS[0]);
-  const [states, setStates] = useState<ConditionStates>(() => defaultStates(BUILTIN_ACTS[0]));
+  const act = PROMISE;
+  const [states, setStates] = useState<ConditionStates>(() => defaultStates());
   const [modelId, setModelId] = useState<string>(DEFAULT_MODEL);
 
   const [running, setRunning] = useState(false);
@@ -49,24 +49,24 @@ export function AustinBot() {
   /** 1-based cell to start from, so an interrupted sweep can be resumed. */
   const [fromCell, setFromCell] = useState(1);
   const [sweepNote, setSweepNote] = useState<string | null>(null);
-  const cells = useMemo(() => enumerateCells(act, scope), [act, scope]);
+  const cells = useMemo(() => enumerateCells(scope), [scope]);
   const cellCount = cells.length;
   const busy = running || sweeping;
 
   // Manual overrides of the composed context prompts. null = use the generated
-  // prompt (and follow condition/act changes); a string = the user has edited it.
+  // prompt (and follow condition changes); a string = the user has edited it.
   const [editedDiego, setEditedDiego] = useState<string | null>(null);
   const [editedEliza, setEditedEliza] = useState<string | null>(null);
 
-  const conditions = useMemo(() => conditionsFor(act), [act]);
-  const scenario = useMemo(() => generateAustin(act, states), [act, states]);
+  const conditions = useMemo(() => conditionsFor(), []);
+  const scenario = useMemo(() => generateAustin(states), [states]);
 
   // Effective context prompts that will actually be sent.
   const diegoPrompt = editedDiego ?? scenario.diegoContextPrompt;
   const elizaPrompt = editedEliza ?? scenario.elizaContextPrompt;
 
-  // The model + act + conditions + any manual edits all define the "setup", so
-  // they key the scorecard and the export.
+  // The model + conditions + any manual edits all define the "setup", so they
+  // key the scorecard and the export.
   const editKey =
     editedDiego !== null || editedEliza !== null
       ? "|edit:" + hashStr((editedDiego ?? "") + "¦" + (editedEliza ?? ""))
@@ -75,11 +75,9 @@ export function AustinBot() {
     () =>
       modelId +
       "|" +
-      act.id +
-      "|" +
       conditions.map((c) => c.key + (states[c.key] ? "1" : "0")).join("") +
       editKey,
-    [modelId, act, conditions, states, editKey],
+    [modelId, conditions, states, editKey],
   );
   const setupRuns = records[sig] ?? [];
   const behaviouralUp = setupRuns.filter((r) => r.behavioural.uptake === true).length;
@@ -88,15 +86,6 @@ export function AustinBot() {
   function resetEdits() {
     setEditedDiego(null);
     setEditedEliza(null);
-  }
-
-  function chooseAct(id: string) {
-    const a = BUILTIN_ACTS.find((x) => x.id === id) ?? BUILTIN_ACTS[0];
-    setAct(a);
-    setStates(defaultStates(a));
-    resetEdits();
-    setTurns([]);
-    setResult(null);
   }
 
   function toggle(key: ConditionKey) {
@@ -116,7 +105,7 @@ export function AustinBot() {
         setDone(i);
         setTurns([]);
         setResult(null);
-        const r = await runDiegoEliza(act, states, modelId, (t) => setTurns((p) => [...p, t]), {
+        const r = await runDiegoEliza(states, modelId, (t) => setTurns((p) => [...p, t]), {
           diegoContextPrompt: diegoPrompt,
           elizaContextPrompt: elizaPrompt,
         });
@@ -140,7 +129,6 @@ export function AustinBot() {
 
   function exportSetup() {
     const payload = buildExport({
-      act,
       states,
       model: modelId,
       runs: setupRuns,
@@ -173,7 +161,6 @@ export function AustinBot() {
 
     try {
       outcome = await runSweep({
-        act,
         scope,
         n: sweepN,
         model: modelId,
@@ -181,7 +168,6 @@ export function AustinBot() {
         onProgress: setSweepProgress,
         onCellDone: (c) => {
           const payload = buildExport({
-            act,
             states: c.cell.states,
             model: modelId,
             runs: c.runs,
@@ -200,8 +186,6 @@ export function AustinBot() {
           // Fold into the scorecard so a swept setup shows its tally too.
           const key =
             modelId +
-            "|" +
-            act.id +
             "|" +
             conditions.map((x) => x.key + (c.cell.states[x.key] ? "1" : "0")).join("");
           setRecords((rec) => ({ ...rec, [key]: [...(rec[key] ?? []), ...c.runs] }));
@@ -270,13 +254,7 @@ export function AustinBot() {
       <div className="cols">
         <div className="col-left">
           <label className="field">Speech act</label>
-          <select value={act.id} onChange={(e) => chooseAct(e.target.value)} disabled={busy}>
-            {BUILTIN_ACTS.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
+          <div className="sb-act">{act.name}</div>
         </div>
         <div className="col-right">
           <p className="sb-explain">
@@ -331,7 +309,7 @@ export function AustinBot() {
         <h2 className="sb-conditions">CONTEXT PROMPTS</h2>
         <p className="sb-prompt-note">
           Composed from the conditions above — but you can edit them by hand and run your own.
-          Changing a condition or the act resets them to the generated version.
+          Changing a condition resets them to the generated version.
         </p>
 
         <PromptEditor

@@ -1,5 +1,4 @@
 import type { Turn, UptakeCategory } from "../core/types";
-import type { ActDefinition } from "../core/act";
 import { generate, GeminiError } from "../api/gemini";
 import { parsePlanSay } from "../core/uptake";
 import { scoreBehavior, scoreDenial } from "../core/score";
@@ -37,13 +36,12 @@ export interface AustinRun {
 const NO_VERDICT: UptakeVerdict = { uptake: null, category: "invalid", move: null };
 
 export async function runDiegoEliza(
-  act: ActDefinition,
   states: ConditionStates,
   model: string,
   onTurn?: (t: Turn) => void,
   overrides?: PromptOverrides,
 ): Promise<AustinRun> {
-  const gen = generateAustin(act, states);
+  const gen = generateAustin(states);
   const diegoContextPrompt = overrides?.diegoContextPrompt ?? gen.diegoContextPrompt;
   const elizaContextPrompt = overrides?.elizaContextPrompt ?? gen.elizaContextPrompt;
   const turns: Turn[] = [];
@@ -96,7 +94,7 @@ export async function runDiegoEliza(
       });
 
     const behaviouralReply = await ask(gen.behaviouralTest);
-    const behavioural = scoreBehavior(behaviouralReply, gen.directive);
+    const behavioural = scoreBehavior(behaviouralReply);
     emit({
       role: "probe",
       label: "Behavioural uptake test",

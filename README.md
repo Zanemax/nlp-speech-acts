@@ -83,7 +83,7 @@ src/
   austin/export.ts               JSON export format
   components/AustinBot.tsx       the page
   components/ChatTranscript.tsx  dialogue view
-  core/act.ts                    Promise, Command, Assertion
+  core/act.ts                    the promise shown on the page
   core/score.ts                  reads Eliza's MOVE lines
   core/uptake.ts                 splits Diego's <plan> from his <say>
   core/types.ts                  shared types

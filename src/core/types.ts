@@ -2,14 +2,10 @@
 
 /** How Eliza's answer to an uptake test is classified. */
 export type UptakeCategory =
-  // behavioural test — promise and assertion
+  // behavioural test
   | "acts_on_it" // relies on it                         -> uptake
   | "withholds" // holds off, verifies, or hedges         -> no uptake
   | "rejects" // treats it as having no hold              -> no uptake
-  // behavioural test — command: a binding order is uptake, mere compliance is not
-  | "recognizes_standing" //                              -> uptake
-  | "complies_only" //                                    -> no uptake
-  | "rejects_standing" //                                 -> no uptake
   // denial probe
   | "holds_to_it" // holds Diego to what he said          -> uptake
   | "lets_it_go" // accepts that nothing was committed    -> no uptake
@@ -18,7 +14,6 @@ export type UptakeCategory =
 /** Categories that count as the act having been taken up. */
 export const UPTAKE_TRUE: ReadonlySet<UptakeCategory> = new Set<UptakeCategory>([
   "acts_on_it",
-  "recognizes_standing",
   "holds_to_it",
 ]);
 
